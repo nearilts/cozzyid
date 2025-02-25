@@ -1,0 +1,5 @@
+export const BASE_URL = 'https://cozzy.id/api/'
+export const URLS = 'https://cozzy.id/'
+// export const URLS = 'http://192.168.249.34:8000/'
+// export const BASE_URL = 'http://192.168.249.34:8000/api/'
+export const BASE_URL_CHAT = 'https://chat.cozzy.id/api/'
