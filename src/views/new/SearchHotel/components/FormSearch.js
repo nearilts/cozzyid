@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-nativ
 import COLORS from '../../../../const/color';
 import DatePickerInput from '../../../../component/DatePickerInput';
 import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 
 const FormSearch = ({ formData, handleInputChange, handleSearch, location }) => {
     return (
@@ -17,17 +18,17 @@ const FormSearch = ({ formData, handleInputChange, handleSearch, location }) => 
                 
                 <View style={styles.inputContainer}>
                     <View style={styles.pickerContainer}>
-                        <Picker
-                        selectedValue={formData.locations}
-                        onValueChange={(itemValue) => handleInputChange('locations', itemValue)}
-                        style={styles.picker}
+                    <ModalSelector
+                    data={location}
+                    initValue="Choose Location"
+                    onChange={(option) => handleInputChange("locations", option.value)}
                         >
-                            {/* buat picker item dari api locations */}
-                            <Picker.Item label="Choose Location" value="" />
-                                {location.map((loc) => (
-                                    <Picker.Item key={loc.id} label={loc.title} value={loc.id} />
-                                ))}
-                        </Picker>
+                    <TextInput
+                        style={styles.picker}
+                        editable={false}
+                        value={formData.locations ? location.find(d => d.value === formData.locations)?.label : "Choose Location"}
+                    />
+                    </ModalSelector>
                     </View>
                     </View>
             
@@ -50,7 +51,7 @@ const FormSearch = ({ formData, handleInputChange, handleSearch, location }) => 
                 <View>
                 <Text style={{ color: COLORS.dark }} >Adults/Number</Text>
                 <TextInput
-                value={formData.adults}
+                 value={formData.adults || "1"}
                 onChangeText={(value) => handleInputChange('adults', value)}
                 keyboardType="numeric" 
                 placeholder='0' 
@@ -60,7 +61,7 @@ const FormSearch = ({ formData, handleInputChange, handleSearch, location }) => 
                 <View>
                 <Text style={{ color: COLORS.dark }}  >Child</Text>
                 <TextInput
-                value={formData.childs}
+                value={formData.childs|| "0"}
                 onChangeText={(value) => handleInputChange('childs', value)}
                 keyboardType="numeric" 
                 placeholder='0' 

@@ -7,14 +7,17 @@ import HelpCenterItem from '../components/HelpCenterItem';
 import { faqKeywords } from '../data';
 import { useTheme } from '../theme/ThemeProvider';
 import { ScrollView } from 'react-native-virtualized-view';
-import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '../config';
 import axios from 'axios';
 import { Linking } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
-const faqsRoute = ({ navigation }) => {
+// Dummy Components for Each Tab Content
+
+
+const FaqsRoute = ({ navigation }) => {
     const [selectedKeywords, setSelectedKeywords] = useState([]);
     const [expanded, setExpanded] = useState(-1);
     const [searchText, setSearchText] = useState('');
@@ -165,75 +168,6 @@ const faqsRoute = ({ navigation }) => {
     );
 };
 
-const contactUsRoute = () => {
-    const navigation = useNavigation();
-    const { colors, dark } = useTheme();
-    const [contactus, setcontactus] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const url = BASE_URL;
-
-    const handleOpenURL = (url) => {
-        Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
-    };
-
-    const apibacaan = async () => {
-        setIsLoading(true);
-        try {
-            const response = await axios.get(`${url}contactus`);
-            console.log('RESPONSES bacan', response.data);
-            setcontactus(response.data.data.data); // Adjust this based on actual response structure
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-   
-
-    useEffect(() => {
-        apibacaan();
-    }, []);
-
-    return (
-        <View style={[styles.routeContainer, {
-            backgroundColor: dark ? COLORS.dark1 : COLORS.tertiaryWhite
-        }]}>
-            <HelpCenterItem
-                icon={icons.headset}
-                title="Customer Service"
-                onPress={() => handleOpenURL(contactus.customer_service)}
-            />
-            <HelpCenterItem
-                icon={icons.whatsapp}
-                title="Whatsapp"
-                onPress={() => handleOpenURL(contactus.whatsapp)}
-            />
-            <HelpCenterItem
-                icon={icons.world}
-                title="Website"
-                onPress={() => handleOpenURL(contactus.website)}
-            />
-            <HelpCenterItem
-                icon={icons.facebook2}
-                title="Facebook"
-                onPress={() => handleOpenURL(contactus.facebook)}
-            />
-            <HelpCenterItem
-                icon={icons.twitter}
-                title="Twitter"
-                onPress={() => handleOpenURL(contactus.twitter)}
-            />
-            <HelpCenterItem
-                icon={icons.instagram}
-                title="Instagram"
-                onPress={() => handleOpenURL(contactus.another)}
-            />
-        </View>
-    )
-}
-
 
 const TicketRoute = () => {
     const navigation = useNavigation();
@@ -304,66 +238,79 @@ const TicketRoute = () => {
             <View style={{ backgroundColor: COLORS.black, width: '100%', height: 1 }}></View>
         </View>
     );
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
-            
-
-            <View style={{  paddingLeft: 20, paddingBottom: 25 }}>
-                <View style={{ borderRadius: 30, backgroundColor: COLORS.white }}>
-                    <View style={{ paddingTop: 20 }}>
-                        <View style={{ backgroundColor: COLORS.black, width: '100%', height: 1 }}></View>
-                        <FlatList
-                            data={profil}
-                            renderItem={renderItem}
-                            keyExtractor={item => item.id}
-                        />
-                    </View>
-                </View>
-            </View>
-
-            <TouchableOpacity style={styles.floatingButton} 
-                onPress={AddGroups}
-                >
-                    <Icon name="assignment-add" size={24} color={COLORS.white} />
-                    <Text style={styles.floatingButtonText}>Buat Tiket</Text>
-                </TouchableOpacity>
-        </SafeAreaView>
-    );
-
 }
-const renderScene = SceneMap({
-    first: faqsRoute,
-    second: TicketRoute,
-    three: contactUsRoute,
-});
+
+const ContactUsRoute = () => {
+    const { colors, dark } = useTheme();
+    const [contactus, setcontactus] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const url = BASE_URL;
+
+    const handleOpenURL = (url) => {
+        Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+    };
+
+    const apibacaan = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(`${url}contactus`);
+            console.log('RESPONSES bacan', response.data);
+            setcontactus(response.data.data.data); // Adjust this based on actual response structure
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+   
+
+    useEffect(() => {
+        apibacaan();
+    }, []);
+
+    return (
+        <View style={[styles.routeContainer, {
+            backgroundColor: dark ? COLORS.dark1 : COLORS.tertiaryWhite
+        }]}>
+            <HelpCenterItem
+                icon={icons.headset}
+                title="Customer Service"
+                onPress={() => handleOpenURL(contactus.customer_service)}
+            />
+            <HelpCenterItem
+                icon={icons.whatsapp}
+                title="Whatsapp"
+                onPress={() => handleOpenURL(contactus.whatsapp)}
+            />
+            <HelpCenterItem
+                icon={icons.world}
+                title="Website"
+                onPress={() => handleOpenURL(contactus.website)}
+            />
+            <HelpCenterItem
+                icon={icons.facebook2}
+                title="Facebook"
+                onPress={() => handleOpenURL(contactus.facebook)}
+            />
+            <HelpCenterItem
+                icon={icons.twitter}
+                title="Twitter"
+                onPress={() => handleOpenURL(contactus.twitter)}
+            />
+            <HelpCenterItem
+                icon={icons.instagram}
+                title="Instagram"
+                onPress={() => handleOpenURL(contactus.another)}
+            />
+        </View>
+    )
+}
 
 const HelpCenter = ({ navigation }) => {
-    const layout = useWindowDimensions();
     const { dark, colors } = useTheme();
-
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'first', title: 'FAQ' },
-        { key: 'second', title: 'Ticket' },
-        { key: 'three', title: 'Contact Us' },
-    ]);
-
-    const renderTabBar = (props) => (
-        <TabBar
-            {...props}
-            indicatorStyle={{ backgroundColor: COLORS.primary }}
-            style={{ backgroundColor: dark ? COLORS.dark1 : COLORS.white }}
-            renderLabel={({ route, focused }) => (
-                <Text style={{
-                    color: focused ? COLORS.primary : 'gray',
-                    fontSize: 16,
-                    fontFamily: "Urbanist Bold"
-                }}>
-                    {route.title}
-                </Text>
-            )}
-        />
-    )
+    const [activeTab, setActiveTab] = useState('faq');
 
     const renderHeader = () => (
         <View style={styles.headerContainer}>
@@ -380,35 +327,107 @@ const HelpCenter = ({ navigation }) => {
                     color: dark ? COLORS.white : COLORS.greyscale900
                 }]}>Help Center</Text>
             </View>
-            {/* <TouchableOpacity>
-                <Image
-                    source={icons.moreCircle}
-                    resizeMode='contain'
-                    style={[styles.moreIcon, {
-                        tintColor: dark ? COLORS.secondaryWhite : COLORS.greyscale900
-                    }]}
-                />
-            </TouchableOpacity> */}
         </View>
-    )
+    );
 
     return (
-        <SafeAreaView style={[styles.area, { backgroundColor: colors.background }]}>
-            <View style={[styles.container, { backgroundColor: colors.background }]}>
-                {renderHeader()}
-                <TabView
-                    navigationState={{ index, routes }}
-                    renderScene={renderScene}
-                    onIndexChange={setIndex}
-                    initialLayout={{ width: layout.width }}
-                    renderTabBar={renderTabBar}
-                />
+        <SafeAreaView style={[styles.area, { backgroundColor: colors.background }]}>  
+            <View style={[styles.container, { backgroundColor: colors.background }]}>  
+                {renderHeader()}  
+
+                {/* Tab Buttons */}
+                <View style={styles.tabContainer}>
+                    {[
+                        { key: 'faq', title: 'FAQ' },
+                        { key: 'ticket', title: 'Ticket' },
+                        { key: 'contact', title: 'Contact Us' }
+                    ].map((tab) => (
+                        <TouchableOpacity
+                            key={tab.key}
+                            style={[styles.tabButton, activeTab === tab.key && styles.activeTab]}
+                            onPress={() => setActiveTab(tab.key)}
+                        >
+                            <Text style={activeTab === tab.key ? styles.activeText : styles.inactiveText}>
+                                {tab.title}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                {/* Tab Content */}
+                {activeTab === 'faq' && <FaqsRoute />}
+                {activeTab === 'ticket' && <TicketRoute />}
+                {activeTab === 'contact' && <ContactUsRoute />}
             </View>
         </SafeAreaView>
-    )
+    );
 };
 
 const styles = StyleSheet.create({
+
+    routeContainer: {
+        flex: 1,
+        backgroundColor: COLORS.white,
+        paddingVertical: 22,
+        paddingLeft:20,
+        paddingRight:20
+    },
+    area: {
+        flex: 1,
+    },
+    container: {
+        flex: 1,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+    },
+    headerLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    backIcon: {
+        width: 24,
+        height: 24,
+    },
+    headerTitle: {
+        marginLeft: 10,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    tabContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        backgroundColor: COLORS.white,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.greyscale200,
+    },
+    tabButton: {
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent',
+    },
+    activeTab: {
+        borderBottomColor: COLORS.primary,
+    },
+    activeText: {
+        color: COLORS.primary,
+        fontWeight: 'bold',
+    },
+    inactiveText: {
+        color: 'gray',
+    },
+    contentContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+
+
     floatingButton: {
         position: 'absolute',
         bottom: 90,
@@ -427,10 +446,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginLeft: 10,
     },
-    area: {
-        flex: 1,
-        backgroundColor: COLORS.white
-    },
+   
     container: {
         flex: 1,
         backgroundColor: COLORS.white,
@@ -464,7 +480,8 @@ const styles = StyleSheet.create({
     routeContainer: {
         flex: 1,
         backgroundColor: COLORS.white,
-        paddingVertical: 22
+        paddingVertical: 22,
+        
     },
     searchBar: {
         width: SIZES.width - 32,
@@ -520,6 +537,6 @@ const styles = StyleSheet.create({
         fontFamily: "Urbanist Regular",
         color: COLORS.gray2,
     },
-})
+});
 
 export default HelpCenter;

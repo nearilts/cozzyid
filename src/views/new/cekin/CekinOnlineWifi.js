@@ -4,10 +4,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from '../../../config';
 import COLORS from '../../../const/color';
+import { BASE_URL } from '../../../config';
 
-const ListDoorLock = ({ navigation }) => {
+const CekinOnlineWifi = ({ navigation }) => {
 
     const url = BASE_URL;
     const [profil, setProfil] = useState([]);
@@ -17,7 +17,7 @@ const ListDoorLock = ({ navigation }) => {
             let userInfo = await AsyncStorage.getItem('userInfo');
             userInfo = JSON.parse(userInfo);
             let token = userInfo.access_token.split('|')[1];
-            const response = await axios.post(`${url}listroom`,{}, {
+            const response = await axios.get(`${url}listcheckins`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -40,9 +40,24 @@ const ListDoorLock = ({ navigation }) => {
     }, [navigation]);
 
     const checkout = async (id) => {
-       
+        try {
+            let userInfo = await AsyncStorage.getItem('userInfo');
+            userInfo = JSON.parse(userInfo);
+            let token = userInfo.access_token.split('|')[1];
+            const response = await axios.post(`${url}cekout-online/${id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('Checkout Response:', response.data);
+            // Optionally refresh the list after checkout
+            navigation.navigate('RatingReview', response.data); 
 
-        navigation.navigate('OpenDoorLock', id); 
+        } catch (error) {
+            console.error(error);
+        }
+
+        // navigation.navigate('RatingReview', id); 
     };
 
     const renderItem = ({ item }) => (
@@ -50,27 +65,24 @@ const ListDoorLock = ({ navigation }) => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems: 'center' }}>
                 <View style={{ flexDirection: 'column', padding: 5 }}>
                     <Text style={{ color: COLORS.dark, fontSize: 18 }}>
-                       No  : {item.room.name}
+                    WIFI ROOM {item.no_kamar}
                     </Text>
-                    <Text style={{ color: COLORS.grey, fontSize: 13 }}>
-                        Location : {item.room.location}
-                    </Text>
-                    <Text style={{ color: COLORS.grey, fontSize: 13 }}>
-                    {item.verifikasi_booking.cekin}  {item.verifikasi_booking.cek_in_hour} -  {item.verifikasi_booking.cekout}  {item.verifikasi_booking.cek_out_hour}
-                    </Text>
+                   
                 </View>
-                <View style={{ padding: 5, backgroundColor: COLORS.primary, borderRadius: 10, width: 80, height: 40, alignItems: 'center', justifyContent: 'center' }}>
-                <TouchableOpacity onPress={() => checkout(item)}>
-                            <Text style={{ color: COLORS.white, fontSize: 13 }}>
-                                Door Lock 
-                            </Text>
-                        </TouchableOpacity>
+                <View style={{ flexDirection: 'column', padding: 5 }}>
+                    <Text style={{ color: COLORS.dark, fontSize: 18 }}>
+                        USERNAME : {item.nama_user_mikhmon}
+                    </Text>
+                    <Text style={{ color: COLORS.dark, fontSize: 18 }}>
+                        PASSWORD : {item.password_user_mikhmon}
+                    </Text>
                 </View>
             </View>
             <View style={{ backgroundColor: COLORS.grey, width: '100%', height: 1 }}></View>
         </View>
     );
 
+  
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             
@@ -88,6 +100,7 @@ const ListDoorLock = ({ navigation }) => {
                 </View>
             </View>
 
+            
         </SafeAreaView>
     );
 };
@@ -131,4 +144,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ListDoorLock;
+export default CekinOnlineWifi;

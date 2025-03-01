@@ -22,51 +22,6 @@ import CekInOnlineTab from '../views/new/cekin/CekInOnlineTab';
 const Tab = createBottomTabNavigator();
 
 // Drawer Navigator
-const Drawer = createDrawerNavigator();
-
-function MyDrawer() {
-    return (
-        <Drawer.Navigator
-            screenOptions={({ route }) => ({
-                drawerIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    if (route.name === "Home") {
-                        iconName = icons.home;
-                    } else if (route.name === "Products") {
-                        iconName = icons.search3;
-                    } else if (route.name === "Profile") {
-                        iconName = icons.home2Outline; // Ensure this icon exists
-                    }
-
-                    return (
-                        <Image
-                            source={iconName}
-                            resizeMode='contain'
-                            style={{
-                                height: 24,
-                                width: 24,
-                                tintColor: color, // Use the provided color for focused/inactive state
-                            }}
-                        />
-                    );
-                },
-                drawerActiveTintColor: COLORS.primary,
-                drawerInactiveTintColor: 'gray',
-            })}
-        >
-            <Drawer.Screen name="Home" component={BottomTabNavigations} />
-            <Drawer.Screen name="Profile" component={ProfileScreen} />
-            <Drawer.Screen name="Products" component={Services} />
-        </Drawer.Navigator>
-    );
-}
-
-// Bottom Tab Navigator
-// const BottomTabNavigation = () => {
-//     return (
-//             <MyDrawer />
-//     );
-// }
 
 const BottomTabNavigation = () => {
     const { dark } = useTheme();
@@ -78,13 +33,14 @@ const BottomTabNavigation = () => {
                 headerShown: false,
                 tabBarStyle: {
                     position: 'absolute',
+                    paddingTop:10,
                     bottom: 0,
                     right: 0,
                     left: 0,
                     elevation: 0,
                     height: Platform.OS === 'ios' ? 90 : 60,
                     backgroundColor: dark ? COLORS.dark1 : COLORS.white,
-                    borderTopColor: "transparent",
+                    borderTopColor: COLORS.dark1,
                 },
             }}
         >
@@ -99,6 +55,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
+                                width:65,textAlign: "center",
                             }}>Home</Text>
                         </View>
                     ),
@@ -115,6 +72,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
+                                width:65,textAlign: "center",
                             }}>Pesanan</Text>
                         </View>
                     ),
@@ -130,6 +88,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
+                                width:65,textAlign: "center",
                             }}>Aktivitas</Text>
                         </View>
                     ),
@@ -145,6 +104,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
+                                width:65,textAlign: "center",
                             }}>Transaksi</Text>
                         </View>
                     ),
@@ -160,6 +120,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
+                                width:65,textAlign: "center",
                             }}>Profil</Text>
                         </View>
                     ),

@@ -21,7 +21,7 @@ const SearchHotel = ({ navigation }) => {
         startDate: new Date(),
         endDate: addDays(new Date(), 1),
         adults: '1',
-        childs: '',
+        childs: '0',
         locations: '',
     });
 
@@ -46,7 +46,11 @@ const SearchHotel = ({ navigation }) => {
             console.error(error);
         }
     };
-
+    const locationData = location.map((loc) => ({
+        key: loc.id,
+        label: loc.title,
+        value: String(loc.id),
+      }));
     useEffect(() => {
         getLocations();
     }, []);
@@ -66,7 +70,7 @@ const SearchHotel = ({ navigation }) => {
                     formData={formData} 
                     handleInputChange={handleInputChange} 
                     handleSearch={handleSearch} 
-                    location={location} 
+                    location={locationData} 
                 />
 
 

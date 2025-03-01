@@ -5,8 +5,9 @@ import { AuthProvider } from "./src/context/AuthContext";
 import * as Notifications from "expo-notifications";
 import { Platform, Alert } from "react-native";
 import Constants from "expo-constants";
-
+import { enableScreens } from 'react-native-screens';
 const App = () => {
+  enableScreens();
   useEffect(() => {
     const registerForPushNotificationsAsync = async () => {
       if (Constants.isDevice) {

@@ -22,7 +22,7 @@ const WebViews = ({ navigation, route }) => {
   }, []);
 
   const handleHomePress = () => {
-    navigation.navigate('Home');
+    navigation.navigate('MainTab');
   };
 
   if (!token) {

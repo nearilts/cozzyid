@@ -6,11 +6,11 @@ import { BASE_URL } from '../../../config';
 import COLORS from '../../../const/color';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-const PageTransaction = ({ route }) => {
+const PageTransactionTiket = ({ route }) => {
   const { param } = route.params;
   const navigation = useNavigation();
   const url = BASE_URL;
-  const [bookings, setBookings] = useState([]);
+  const [tikets, setBookings] = useState([]);
 
   const fetchBookings = async () => {
     try {
@@ -30,9 +30,7 @@ const PageTransaction = ({ route }) => {
       console.error(error);
     }
   };
-  useEffect(() => {
-    fetchBookings();
-  }, [route.params]);
+
   // Gunakan useFocusEffect untuk memanggil fetchBookings setiap kali layar mendapatkan fokus
   useFocusEffect(
     React.useCallback(() => {
@@ -122,7 +120,7 @@ const PageTransaction = ({ route }) => {
         <View style={{ width: '90%' }}>
           <FlatList
             showsVerticalScrollIndicator={false}
-            data={bookings}
+            data={tikets}
             renderItem={({ item }) => <Card item={item} />}
             keyExtractor={(item) => item.id.toString()} // Pastikan ada keyExtractor jika data adalah array
           />
@@ -133,4 +131,4 @@ const PageTransaction = ({ route }) => {
 };
 
 const styles = StyleSheet.create({});
-export default PageTransaction;
+export default PageTransactionTiket;

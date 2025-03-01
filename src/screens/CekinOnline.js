@@ -97,7 +97,7 @@ const CekInOnline = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             
 
-            <View style={{  paddingLeft: 20, paddingBottom: 25 }}>
+            <View style={{ paddingTop:25, paddingLeft: 20, paddingBottom: 25 }}>
                 <View style={{ borderRadius: 30, backgroundColor: COLORS.white }}>
                     <View style={{ paddingTop: 20 }}>
                         <View style={{ backgroundColor: COLORS.dark, width: '100%', height: 1 }}></View>

@@ -1,47 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import DatePicker from 'react-native-date-picker';
-import COLORS from '../const/color';
-const DatePickerInput = ({ type, onChange, defaultDate }) => {
-  const [date, setDate] = useState(defaultDate);
-  const [open, setOpen] = useState(false);
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, TextInput, Platform } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from "moment";
 
-  // Update state date ketika defaultDate berubah
-  useEffect(() => {
-    setDate(defaultDate);
-  }, [defaultDate]);
+const DatePickerInput = ({ type, onChange }) => {
+  const [date, setDate] = useState(new Date()); // Set nilai default agar picker tidak kosong
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const formattedDate = date ? date.toISOString().split('T')[0] : '';
-
-    return (
-      <>
-        <TouchableOpacity onPress={() => setOpen(true)}>
-          <TextInput
-            style={{ borderWidth: 1, borderColor: 'gray', padding: 10, marginBottom: 10, borderRadius:10, width: 150 , color:COLORS.dark}}
-            value={formattedDate}
-            editable={false}
-            placeholder={type === 'start' ? 'Select Start Date' : 'Select End Date'}
-          />
-        </TouchableOpacity>
-        {open && (
-          <DatePicker
-            modal
-            open={open}
-            date={date}
-            mode="date"
-            minimumDate={new Date()}
-            onConfirm={(selectedDate) => {
-              setOpen(false);
-              setDate(selectedDate);
-              onChange(selectedDate); // Panggil prop onChange dengan tanggal yang dipilih
-            }}
-            onCancel={() => {
-              setOpen(false);
-            }}
-          />
-        )}
-      </>
-    );
+  const handleConfirm = (selectedDate) => {
+    setDate(selectedDate);
+    onChange(selectedDate);
+    setDatePickerVisibility(false);
   };
-  
-  export default DatePickerInput;
+
+  return (
+    <View>
+      <TouchableOpacity style={{padding:15}} onPress={() => setDatePickerVisibility(true)}>
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: "gray",
+            padding: 10,
+            borderRadius: 10,
+            width: 150,
+          }}
+          value={date ? moment(date).format("YYYY-MM-DD") : ""}
+          placeholder={type === "start" ? "Select Start Date" : "Select End Date"}
+          editable={false}
+        />
+      </TouchableOpacity>
+
+      <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="date"
+          date={date || new Date()} // Pastikan date tidak null
+          minimumDate={new Date()}
+          display={Platform.OS === "ios" ? "compact" : "default"} // Ubah inline menjadi compact
+          onConfirm={handleConfirm}
+          onCancel={() => setDatePickerVisibility(false)}
+          locale="id_ID" // Pastikan format sesuai bahasa
+        />
+    </View>
+  );
+};
+
+export default DatePickerInput;

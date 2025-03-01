@@ -6,6 +6,7 @@ import { BASE_URL } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Picker } from '@react-native-picker/picker';
+import ModalSelector from 'react-native-modal-selector';
 
 const { width } = Dimensions.get('screen');
 const cardWidth = width - 40; // Adjusted for padding
@@ -17,7 +18,8 @@ const ShopCart = ({ navigation }) => {
     const [cart, setCart] = useState([]);
     const [type, setType] = useState([]);
     const [selectedType, setSelectedType] = useState("");
-
+   
+    
     const [hotel, setHotel] = useState(""); // Hotel input
     const [room, setRoom] = useState(""); // Room input
 
@@ -59,7 +61,18 @@ const ShopCart = ({ navigation }) => {
             setIsLoading(false);
         }
     };
-
+    const [selectedLabel, setSelectedLabel] = useState(
+        type[selectedType] || "Choose Type"
+      );
+    
+      const typeOptions = [
+        { key: "default", label: "Choose Type", value: "" }, // Opsi default
+        ...Object.entries(type).map(([key, label], index) => ({
+          key: index + 1, // Pastikan key unik
+          label: label,
+          value: key,
+        })),
+      ];
     useEffect(() => {
         getCart();
         const unsubscribe = navigation.addListener('focus', () => {
@@ -208,6 +221,11 @@ const ShopCart = ({ navigation }) => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'IDR' }).format(price);
     };
+    const onTypeChange = (value) => {
+        console.log("Type changed to:", value);
+        setSelectedType(value); // Simpan nilai yang dipilih jika diperlukan
+    };
+
     const Card = ({ item }) => {
        
 
@@ -256,53 +274,58 @@ const ShopCart = ({ navigation }) => {
                 renderItem={({ item }) => <Card item={item} />}
                 keyExtractor={item => item.product_id.toString()} // Assuming each item has a unique 'product_id'
             />
-            <Picker
-                selectedValue={selectedType}
-                onValueChange={handleTypeChange} // Use the new handler
-                style={styles.picker}
-            >
-                <Picker.Item label="Choose Type" value="" />
-                {Object.entries(type).map(([key, label]) => (
-                    <Picker.Item key={key} label={label} value={key} />
-                ))}
-            </Picker>
+            <ModalSelector
+                    data={typeOptions}
+                    initValue="Choose Type"
+                    onChange={(option) => {
+                        setSelectedLabel(option.label);
+                        onTypeChange(option.value);
+                    }}
+                    style={styles.picker}
+                    selectTextStyle={{
+                    color: "black",
+                    }}
+                />
 
             {/* Address Picker */}
             {selectedType === "kirim" && (
                 <View style={{}}>
-                    <Picker
-                        selectedValue={selectedAddress}
-                        onValueChange={handleAddressChange}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Choose Address" value="" />
-                        {address.map((addr) => (
-                            <Picker.Item key={addr.id} label={addr.address} value={addr.id} />
-                        ))}
-                    </Picker>
+                    <ModalSelector
+                            data={address.map((addr) => ({
+                                key: addr.id,
+                                label: addr.address,
+                                value: addr.id,
+                            }))}
+                            initValue="Choose Address"
+                            onChange={(option) => handleAddressChange(option.value)}
+                            style={styles.picker}
+                            selectTextStyle={{ color: "black" }}
+                            />
 
                       {/* Courier Picker */}
-                    <Picker
-                        selectedValue={selectedCourier}
-                        onValueChange={handleCourierChange}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Choose Courier" value="" />
-                        {courierOptions.map((courier) => (
-                            <Picker.Item key={courier.key} label={courier.value} value={courier.key} />
-                        ))}
-                    </Picker>
+                      <ModalSelector
+                            data={courierOptions.map((courier) => ({
+                                key: courier.key,
+                                label: courier.value,
+                                value: courier.key,
+                            }))}
+                            initValue="Choose Courier"
+                            onChange={(option) => handleCourierChange(option.value)}
+                            style={styles.picker}
+                            selectTextStyle={{ color: "black" }}
+                            />
 
-                    <Picker
-                        selectedValue={selectedPriceCourir}
-                        onValueChange={setSelectedPriceCourir}
+                        <ModalSelector
+                        data={PriceCourir.map((courier) => ({
+                            key: courier.service,
+                            label: `${courier.description} - ${formatPrice(courier?.cost[0]?.value)}`,
+                            value: courier?.cost[0]?.value,
+                        }))}
+                        initValue="Choose Price"
+                        onChange={(option) => setSelectedPriceCourir(option.value)}
                         style={styles.picker}
-                    >
-                        <Picker.Item label="Choose Price" value="" />
-                        {PriceCourir.map((courier) => (
-                            <Picker.Item key={courier.service} label={`${courier.description} - ${formatPrice(courier?.cost[0]?.value)}`} value={courier?.cost[0]?.value} />
-                        ))}
-                    </Picker>
+                        selectTextStyle={{ color: "black" }}
+                        />
 
                 </View>
             )}
@@ -311,16 +334,17 @@ const ShopCart = ({ navigation }) => {
             {/* Address Picker */}
             {selectedType === "antar" && (
                 <View style={{}}>
-                    <Picker
-                        selectedValue={selectedHotel}
-                        onValueChange={setSelectedHotel}
+                  <ModalSelector
+                        data={hotel.map((h) => ({
+                            key: h.id,
+                            label: h.title,
+                            value: h.id,
+                        }))}
+                        initValue="Choose Hotel"
+                        onChange={(option) => setSelectedHotel(option.value)}
                         style={styles.picker}
-                    >
-                        <Picker.Item label="Choose Hotel" value="" />
-                        {hotel.map((addr) => (
-                            <Picker.Item key={addr.id} label={addr.title} value={addr.id} />
-                        ))}
-                    </Picker>
+                        selectTextStyle={{ color: "black" }}
+                        />
                     <TextInput
                         style={styles.input}
                         placeholder="No Kamar"

@@ -75,6 +75,9 @@ import ListDoorLockRemote from '../views/new/cekin/ListDoorLockRemote';
 import ListRemote from '../views/new/cekin/ListRemote';
 import RemoteTv from '../views/new/cekin/RemoteTv';
 import RemoteAc from '../views/new/cekin/RemoteAc';
+import ListDoorLock from '../views/new/cekin/ListDoorLock';
+import ListDoorLockLight from '../views/new/cekin/ListDoorLockLight';
+import CekinOnlineWifi from '../views/new/cekin/CekinOnlineWifi';
 
 
 
@@ -233,6 +236,14 @@ const Navigation = () => {
         <Stack.Screen name="ListRemote" component={ListRemote}/>
         <Stack.Screen name="RemoteTv" component={RemoteTv}/>
         <Stack.Screen name="RemoteAc" component={RemoteAc}/>
+
+
+
+        <Stack.Screen name="ListDoorLock" component={ListDoorLock}/>
+        <Stack.Screen name="CekInOnlines" component={CekInOnline}/>
+        <Stack.Screen name="ListDoorLockLight" component={ListDoorLockLight}/>
+        <Stack.Screen name="CekinOnlineWifi" component={CekinOnlineWifi}/>
+
 
         </Stack.Navigator>
     </NavigationContainer>

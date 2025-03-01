@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, Button, ScrollView } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Button, ScrollView,TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import COLORS from '../../../../const/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../../../../config';
 import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
+import ModalSelector from "react-native-modal-selector";
 
 const BookingPesawat = ({ navigation, route }) => {
   const { dewasa, anak, balita } = route.params.form; // Mengambil jumlah dewasa, anak, dan balita dari parameter
@@ -52,6 +53,7 @@ const BookingPesawat = ({ navigation, route }) => {
   };
 
   const handleChange = (index, name, value, type) => {
+    console.log(type); 
     if (name === 'birthDate') {
       value = formatDate(value); // Format jika input adalah tanggal
     }
@@ -72,11 +74,11 @@ const BookingPesawat = ({ navigation, route }) => {
     );
 
     const formattedChildren = childData.map(child => 
-        `CHD;${child.title};m;${child.firstName};${child.lastName};${child.birthDate};${child.ktpNumber};ID;ID;;;ID;`
+        `CHD;${child.title};${child.firstName};${child.lastName};${child.birthDate};${child.ktpNumber};ID;ID;;;ID;`
     );
 
     const formattedInfants = infantData.map(infant => 
-        `INF;${infant.title};m;${infant.firstName};${infant.lastName};${infant.birthDate};${infant.ktpNumber};ID;ID;;;ID;`
+        `INF;${infant.title};${infant.firstName};${infant.lastName};${infant.birthDate};${infant.ktpNumber};ID;ID;;;ID;`
     );
     const flightData = route.params.item.classes;
 
@@ -133,6 +135,18 @@ const BookingPesawat = ({ navigation, route }) => {
 
     };
 
+    const titleOptions = [
+      { key: "MR", label: "MR" },
+      { key: "MRS", label: "MRS" },
+      { key: "MSTR", label: "MSTR" },
+      { key: "MISS", label: "MISS" },
+      { key: "MS", label: "MS" },
+    ];
+
+    const titleOptionChilds = [
+      { key: "MSTR", label: "MSTR" },
+      { key: "MISS", label: "MISS" },
+    ];
 
   return (
     <View style={styles.container}>
@@ -147,17 +161,21 @@ const BookingPesawat = ({ navigation, route }) => {
             <View key={index} style={styles.passengerContainer}>
               <Text style={styles.subTitle}>Dewasa {index + 1}</Text>
               <Text style={styles.label}>Pilih Gelar:</Text>
-              <Picker
-                selectedValue={passenger.title}
+              <ModalSelector
+                 data={titleOptions}
+
+                initValue="Pilih Title"
+                onChange={(option) => handleChange(index, "title", option.key, "adult")}
                 style={styles.picker}
-                onValueChange={(itemValue) => handleChange(index, 'title', itemValue, 'adult')}
               >
-                <Picker.Item label="MR" value="MR" />
-                <Picker.Item label="MRS" value="MRS" />
-                <Picker.Item label="MSTR" value="MSTR" />
-                <Picker.Item label="MISS" value="MISS" />
-                <Picker.Item label="MS" value="MS" />
-              </Picker>
+                 <Text style={{color:COLORS.dark}}>
+                  {(() => {
+                    const selectedTitle = passenger.title || "";
+                    const selectedLabel = titleOptions.find((d) => d.key === selectedTitle)?.label;
+                    return selectedLabel || "Pilih Titles";
+                  })()}
+                </Text>
+              </ModalSelector>
 
               <Text style={styles.label}>Nama Depan:</Text>
               <TextInput
@@ -212,14 +230,23 @@ const BookingPesawat = ({ navigation, route }) => {
             <View key={index} style={styles.passengerContainer}>
               <Text style={styles.subTitle}>Anak {index + 1}</Text>
               <Text style={styles.label}>Pilih Gelar:</Text>
-              <Picker
-                selectedValue={child.title}
+              
+
+              <ModalSelector
+                 data={titleOptionChilds}
+
+                initValue="Pilih Title"
+                onChange={(option) => handleChange(index, "title", option.key, "child")}
                 style={styles.picker}
-                onValueChange={(itemValue) => handleChange(index, 'title', itemValue, 'child')}
               >
-                <Picker.Item label="MSTR" value="MSTR" />
-                <Picker.Item label="MISS" value="MISS" />
-              </Picker>
+                 <Text style={{color:COLORS.dark}}>
+                  {(() => {
+                    const selectedTitle = child.title || "";
+                    const selectedLabel = titleOptionChilds.find((d) => d.key === selectedTitle)?.label;
+                    return selectedLabel || "Pilih Titles";
+                  })()}
+                </Text>
+              </ModalSelector>
 
               <Text style={styles.label}>Nama Depan:</Text>
               <TextInput
@@ -240,7 +267,7 @@ const BookingPesawat = ({ navigation, route }) => {
                 style={styles.input}
                 value={child.birthDate}
                 onChangeText={(value) => handleChange(index, 'birthDate', value, 'child')}
-                placeholder="DD/MM/YYYY"
+                placeholder="MM/DD/YYYY"
                 placeholderTextColor={COLORS.dark}
               />
 
@@ -258,14 +285,21 @@ const BookingPesawat = ({ navigation, route }) => {
             <View key={index} style={styles.passengerContainer}>
               <Text style={styles.subTitle}>Balita {index + 1}</Text>
               <Text style={styles.label}>Pilih Gelar:</Text>
-              <Picker
-                selectedValue={infant.title}
+              <ModalSelector
+                 data={titleOptionChilds}
+
+                initValue="Pilih Title"
+                onChange={(option) => handleChange(index, "title", option.key, "infant")}
                 style={styles.picker}
-                onValueChange={(itemValue) => handleChange(index, 'title', itemValue, 'infant')}
               >
-                <Picker.Item label="MSTR" value="MSTR" />
-                <Picker.Item label="MISS" value="MISS" />
-              </Picker>
+                 <Text style={{color:COLORS.dark}}>
+                  {(() => {
+                    const selectedTitle = infant.title || "";
+                    const selectedLabel = titleOptionChilds.find((d) => d.key === selectedTitle)?.label;
+                    return selectedLabel || "Pilih Titles";
+                  })()}
+                </Text>
+              </ModalSelector>
 
               <Text style={styles.label}>Nama Depan:</Text>
               <TextInput
@@ -286,7 +320,7 @@ const BookingPesawat = ({ navigation, route }) => {
                 style={styles.input}
                 value={infant.birthDate}
                 onChangeText={(value) => handleChange(index, 'birthDate', value, 'infant')}
-                placeholder="DD/MM/YYYY"
+                placeholder="MM/DD/YYYY"
                 placeholderTextColor={COLORS.dark}
               />
 
@@ -299,8 +333,13 @@ const BookingPesawat = ({ navigation, route }) => {
             </View>
           ))}
 
-          <Button title="Submit" onPress={handleSubmit} />
-        </View>
+          <TouchableOpacity 
+            style={[styles.button, { backgroundColor: COLORS.primary }]} 
+            onPress={handleSubmit}
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>        
+          </View>
       </ScrollView>
     </View>
   );
@@ -359,10 +398,25 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginBottom: 15,
-    color:COLORS.dark
+    color:COLORS.dark,
+    borderColor:COLORS.dark,
+    borderWidth:1,
+    borderRadius:10,
+    padding:15
   },
   passengerContainer: {
     marginBottom: 20,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

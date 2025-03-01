@@ -12,6 +12,7 @@ import { BASE_URL } from '../../config'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay'
+import ModalSelector from 'react-native-modal-selector';
 
 
 const CheckoutBooking = ({ navigation, route }) => {
@@ -136,6 +137,14 @@ const CheckoutBooking = ({ navigation, route }) => {
         value={countryCode}
       />
     ));
+
+    const countryOptionss = Object.keys(countrys).map(countryCode => ({
+        key: countryCode,
+        label: countrys[countryCode], // Nama negara
+        value: countryCode, // Kode negara
+      }));  
+      const defaultLabel =
+      country[profil.country] || "Select Country"; 
 
     const [checkoutData, setCheckoutData] = useState({
         code: code,
@@ -298,7 +307,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                     <View style={{ marginTop: 5 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>First Name</Text>
                         <TextInput
-                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350  }}
                             defaultValue={profil.first_name}
                             onChangeText={(value) => handleInputChange('first_name', value)}
                         />
@@ -306,7 +315,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>Last Name</Text>
                         <TextInput
-                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350 }}
                             defaultValue={profil.last_name}
                             onChangeText={(value) => handleInputChange('last_name', value)}
                         />
@@ -314,7 +323,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>Email</Text>
                         <TextInput
-                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350 }}
                             defaultValue={profil.email}
                             onChangeText={(value) => handleInputChange('email', value)}
                         />
@@ -322,7 +331,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>Phone</Text>
                         <TextInput
-                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350 }}
                             defaultValue={profil.phone}
                             onChangeText={(value) => handleInputChange('phone', value)}
                         />
@@ -330,12 +339,25 @@ const CheckoutBooking = ({ navigation, route }) => {
                     <View style={{ marginTop: 20 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>Country</Text>
                        
-                      <Picker
-                            style={{backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark}}
+                                    <ModalSelector
+                                    data={countryOptionss}
+                                    initValue={defaultLabel}
+                                    onChange={(option) => setSelectedCountry(option.value)}
+                                    style={{
+                                        backgroundColor: COLORS.white,
+                                        borderRadius: 10,
+                                        color:COLORS.dark
+                                    }}
+                                    selectTextStyle={{
+                                        color: COLORS.dark,
+                                    }}
+                                    />
+                      {/* <Picker
+                            style={{backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350}}
                             selectedValue={selectedCountry}
                             onValueChange={handleSelectChange}>
                             {countryOptions}
-                        </Picker>
+                        </Picker> */}
                     </View>
                 </View>
 
@@ -352,7 +374,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                 <View style={{ marginTop: 10 }}>
                      <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>COUPON</Text>
                      <TextInput
-                         style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                         style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350 }}
                          onChangeText={(value) => handleCouponChange('coupon_code', value)}
                      />
                      <Text style={{ color: COLORS.white, fontSize: 15,marginTop:5, marginBottom: 15, marginLeft: 5, fontWeight: 'bold' }}>{formatPrice(booking.coupon_amount)}</Text>
@@ -369,7 +391,7 @@ const CheckoutBooking = ({ navigation, route }) => {
                    <View style={{ marginTop: 10 }}>
                         <Text style={{ color: COLORS.white, fontSize: 15, marginBottom: 5, marginLeft: 5, fontWeight: 'bold' }}>Point Credit</Text>
                         <TextInput
-                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark }}
+                            style={{ backgroundColor: COLORS.white, borderRadius: 10, color: COLORS.dark,height:50, width: 350 }}
                             defaultValue='0'
                             onChangeText={(value) => handleInputChange('credit', value)}
                         />
