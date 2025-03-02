@@ -18,6 +18,7 @@ import CekInOnline from '../screens/CekinOnline';
 import Profil from '../views/new/Profil/Profil';
 import TransactionPpob from '../views/new/TransactionPpob/TransactionPpob';
 import CekInOnlineTab from '../views/new/cekin/CekInOnlineTab';
+import BookingPage from '../views/booking/BookingPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -63,7 +64,7 @@ const BottomTabNavigation = () => {
             />
             <Tab.Screen
                 name="BookingScreen"
-                component={BookingScreen}
+                component={BookingPage}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={{ alignItems: "center" }}>

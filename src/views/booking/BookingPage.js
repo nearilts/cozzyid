@@ -114,7 +114,7 @@ const BookingPage = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex:1, backgroundColor:COLORS.white}}>
+    <SafeAreaView style={{flex:1, backgroundColor:COLORS.white, top:40}}>
       <View style={{alignItems:'center', paddingBottom:70}}>
         <View style={{ width:'90%'}}>
         <FlatList

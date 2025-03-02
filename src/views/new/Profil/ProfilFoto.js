@@ -8,9 +8,10 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { launchImageLibrary, launchCamera } from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import ImageResizer from 'react-native-image-resizer';
 import { useNavigation } from '@react-navigation/native';
-
+import * as ImagePicker from 'expo-image-picker';
+import ImageResizer from 'react-native-image-resizer';
+import * as FileSystem from 'expo-file-system';
 
 const ProfilFoto = () => {
         const navigation = useNavigation();
@@ -49,91 +50,126 @@ const ProfilFoto = () => {
   const renderProfile = () => {
     const [image, setImage] = useState(profil.avatar_url)
 
-    const kirim_file = async (files) => {
-      try {
-        if (!files) {
-          Alert.alert('No file selected', 'Please select a file to upload.');
-          return;
-        }
     
-        let userInfo = await AsyncStorage.getItem('userInfo');
-        userInfo = JSON.parse(userInfo);
-        let token = userInfo.access_token.split('|')[1];
-        const formDatas = new FormData();
-        formDatas.append('file', {
-          uri: files.uri,
-          name: files.fileName || 'default.jpg',
-          type: files.type || 'image/jpeg',
-        });
-        console.log(`${url}upload_foto`);
-        console.log('File URI:', files.uri);
-        console.log('File Name:', files.fileName);
-        console.log('File Type:', files.type);
-        console.log('formDatas:', formDatas);
-    
-        const response = await axios.post(`${url}upload_foto`, formDatas, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data', 
-          }
-        });
-    
-        console.log('File', response.data);
-        fetchprofil();
-    
-      } catch (error) {
-        if (error.response) {
-          console.error('Error response data:', error.response.data);
-          console.error('Error response status:', error.response.status);
-          console.error('Error response headers:', error.response.headers);
-        } else if (error.request) {
-          console.error('Error request data:', error.request);
-        } else {
-          console.error('Error message:', error.message);
-        }
+  const kirim_file = async (file) => {
+    try {
+      if (!file || !file.uri) {
+        Alert.alert('No file selected', 'Please select a file to upload.');
+        return;
       }
-    };
+
+      // Cek apakah file benar-benar ada di penyimpanan
+      const fileInfo = await FileSystem.getInfoAsync(file.uri);
+      if (!fileInfo.exists) {
+        Alert.alert('File Not Found', 'The selected file does not exist.');
+        return;
+      }
+
+      let userInfo = await AsyncStorage.getItem('userInfo');
+      userInfo = JSON.parse(userInfo);
+      let token = userInfo.access_token.split('|')[1];
+
+      const formDatas = new FormData();
+      const fileBlob = {
+        uri: file.uri,
+        name: file.name || file.uri.split('/').pop(), // Ambil nama file dari URI jika tidak ada
+        type: file.type || 'image/jpeg',
+      };
+
+      formDatas.append('file', fileBlob);
+
+      console.log('Uploading to:', `${url}upload_foto`);
+      console.log('File URI:', file.uri);
+      console.log('File Name:', fileBlob.name);
+      console.log('File Type:', fileBlob.type);
+      console.log('FormData:', formDatas);
+
+      const response = await axios.post(`${url}upload_foto`, formDatas, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+          Accept: 'application/json',
+
+        },
+      });
+
+      console.log('Upload Success:', response.data);
+      fetchprofil();
+
+    } catch (error) {
+      if (error.response) {
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error request:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+    }
+  };
     // Image Profile handler
-    const pickImage = () => {
+    const pickImage = async () => {
       Alert.alert(
         "Pilih Sumber Gambar",
-        "Pilih Kamera Atau Galeri",
+        "Pilih Kamera atau Galeri",
         [
           {
             text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
+            style: "cancel",
           },
           {
             text: "Camera",
-            onPress: () => launchCamera({ mediaType: 'photo', quality: 1 }, async (response) => {
-              if (response.didCancel) {
-                console.log('User cancelled image picker');
-              } else if (response.error) {
-                console.error('ImagePicker Error: ', response.error);
-              } else {
-                // setFile(response.assets[0]);
-              const resizedImage = await ImageResizer.createResizedImage(response.assets[0].uri, 800, 600, 'JPEG', 80);
-              console.log('resizedImage',resizedImage);
-
-                kirim_file(resizedImage);
+            onPress: async () => {
+              const { status } = await ImagePicker.requestCameraPermissionsAsync();
+              if (status !== 'granted') {
+                Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses kamera.");
+                return;
               }
-            })
+    
+              try {
+                const result = await ImagePicker.launchCameraAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                  quality: 1,
+                  allowsEditing: true,
+                });
+    
+                if (!result.canceled) {
+                  // const resizedImage = await ImageResizer.createResizedImage(result.assets[0].uri, 800, 600, 'JPEG', 80);
+                  // console.log('Resized Image:', resizedImage);
+                  kirim_file(result.assets[0]);
+                }
+              } catch (error) {
+                console.error("Error membuka kamera:", error);
+              }
+            },
           },
           {
             text: "Gallery",
-            onPress: () => launchImageLibrary({ mediaType: 'photo', quality: 1 },async (response) => {
-              if (response.didCancel) {
-                console.log('User cancelled image picker');
-              } else if (response.error) {
-                console.error('ImagePicker Error: ', response.error);
-              } else {
-                const resizedImage = await ImageResizer.createResizedImage(response.assets[0].uri, 800, 600, 'JPEG', 80);
-                console.log('resizedImage',resizedImage);
-                kirim_file(resizedImage);
+            onPress: async () => {
+              const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+              if (status !== 'granted') {
+                Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses galeri.");
+                return;
               }
-            })
-          }
+    
+              try {
+                const result = await ImagePicker.launchImageLibraryAsync({
+                  mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                  quality: 1,
+                  allowsEditing: true,
+                });
+    
+                if (!result.canceled) {
+                  // const resizedImage = await ImageResizer.createResizedImage(result.assets[0].uri, 800, 600, 'JPEG', 80);
+                  // console.log('Resized Image:', resizedImage);
+                  kirim_file(result.assets[0]);
+                }
+              } catch (error) {
+                console.error("Error membuka galeri:", error);
+              }
+            },
+          },
         ],
         { cancelable: true }
       );

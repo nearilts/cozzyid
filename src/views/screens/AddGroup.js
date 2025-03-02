@@ -10,8 +10,12 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import COLORS from '../../const/color';
 import { BASE_URL, BASE_URL_CHAT } from '../../config';
+import { useNavigation } from '@react-navigation/native';
+import ModalSelector from 'react-native-modal-selector';
 
-const AddGroup = ({ navigation }) => {
+const AddGroup = ({  }) => {
+    const navigation = useNavigation();
+  
     const url = BASE_URL_CHAT;
 
     const [isLoading, setIsLoading] = useState(false);
@@ -134,7 +138,14 @@ const AddGroup = ({ navigation }) => {
     );
   };
 
-
+  const groupTypeOptions = [
+    { key: 1, label: "Open", value: "1" },
+    { key: 2, label: "Close", value: "2" },
+  ];
+  const privacyOptions = [
+    { key: 1, label: "Public", value: "1" },
+    { key: 2, label: "Private", value: "2" },
+  ];
   const FeatureItem = ({ icon, text, file, onPress, users }) => (
     <View style={styles.featureItem}>
       <TouchableOpacity onPress={onPress}>
@@ -179,15 +190,17 @@ const AddGroup = ({ navigation }) => {
                 <View style={{}}>
                   <Text style={{ paddingLeft: 10, paddingTop: 20, fontSize: 15, color: COLORS.dark, fontWeight: 'bold',marginBottom:10 }}> Group Type</Text>
                     <View style={styles.pickerContainer}>
-                        <Picker
-                        selectedValue={formData.group_type}
-                        onValueChange={(itemValue) => handleInputChange('group_type', itemValue)}
-                        style={styles.picker}
-                        >
-                            <Picker.Item label="Open" value="1" />
-                            <Picker.Item label="Close" value="2" />
-                               
-                        </Picker>
+                       <ModalSelector
+                            data={groupTypeOptions}
+                            initValue="Pilih Group Type"
+                            onChange={(option) => handleInputChange("group_type", option.value)}
+                          >
+                            <TextInput
+                              style={styles.picker}
+                              editable={false}
+                              value={formData.group_type ? groupTypeOptions.find(d => d.value === formData.group_type)?.label : "Pilih Group Type"}
+                            />
+                          </ModalSelector>;
                     </View>
                 </View>
             
@@ -199,15 +212,17 @@ const AddGroup = ({ navigation }) => {
                 <View style={{}}>
                     <Text style={{ paddingLeft: 10, paddingTop: 20, fontSize: 15, color: COLORS.dark, fontWeight: 'bold',marginBottom:10 }}> Privacy</Text>
                         <View style={styles.pickerContainer}>
-                            <Picker
-                            selectedValue={formData.privacy}
-                            onValueChange={(itemValue) => handleInputChange('privacy', itemValue)}
-                            style={styles.picker}
-                            >
-                                <Picker.Item label="Public" value="1" />
-                                <Picker.Item label="Private" value="2" />
-                                
-                            </Picker>
+                        <ModalSelector
+                            data={privacyOptions}
+                            initValue="Pilih Privacy"
+                            onChange={(option) => handleInputChange("privacy", option.value)}
+                          >
+                            <TextInput
+                              style={styles.picker}
+                              editable={false}
+                              value={formData.privacy ? privacyOptions.find(d => d.value === formData.privacy)?.label : "Pilih Privacy"}
+                            />
+                          </ModalSelector>
                         </View>
                 </View>
             

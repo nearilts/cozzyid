@@ -5,6 +5,7 @@ import COLORS from '../../../const/color';  // Assuming COLORS is an existing fi
 import axios from 'axios';
 import { BASE_URL } from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ModalSelector from 'react-native-modal-selector';
 
 const RatingReview = ({navigation, route}) => {
     console.log(route.params.data.id)
@@ -96,7 +97,7 @@ const RatingReview = ({navigation, route}) => {
       console.log('response', response.data);
       if (response.data.status === "success") {
         alert('Data Success Save');
-        navigation.navigate('Home')
+        navigation.navigate('MainTab')
       } else {
         alert(response.data.message);
       }
@@ -123,16 +124,21 @@ const RatingReview = ({navigation, route}) => {
               <Text style={styles.label}>Menulis review</Text>
       
               <Text style={styles.label}>Hotel</Text>
-              <Picker
-                selectedValue={hotel}
-                style={styles.input}
-                onValueChange={(itemValue) => setHotel(itemValue)}
-              >
-               <Picker.Item label="Choose Location" value="" />
-                {location.map((loc) => (
-                    <Picker.Item key={loc.id} label={loc.title} value={loc.id} />
-                ))}
-                </Picker>
+              <ModalSelector
+                  data={location.map((loc) => ({
+                    key: loc.id,
+                    label: loc.title,
+                    value: loc.id,
+                  }))}
+                  initValue="Choose Location"
+                  onChange={(option) => setHotel(option.value)}
+                >
+                  <TextInput
+                    style={styles.input}
+                    editable={false}
+                    value={hotel ? location.find((loc) => loc.id === hotel)?.title : "Choose Location"}
+                  />
+                </ModalSelector>
       
               <TextInput
                 style={styles.input}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Linking } from 'react-native';
+import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import COLORS from '../../../const/color';
 import * as Clipboard from 'expo-clipboard';
 import { BASE_URL, URLS } from '../../../config';
@@ -24,8 +24,8 @@ const OpenDoorLock = ({navigation, route}) => {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log('response', response.data);
-        Alert.alert("Buka Pintu", response.data);
+        console.log('response', response.data.data.no_kamar);
+        Alert.alert("Buka Pintu", (response.data.data.no_kamar));
         setIsLoading(false);
 
     } catch (error) {
@@ -54,7 +54,16 @@ const OpenDoorLock = ({navigation, route}) => {
       <Text style={styles.subText}>Klik Tombol Buka Pintu</Text>
       
       <TouchableOpacity style={styles.lockButton} onPress={handleOpenDoor}>
-        <Text style={styles.lockText}>Buka Pintu</Text>
+      <Image
+            source={require('../../../assets/images/doorlock.png')}
+            resizeMode='contain'
+            style={{
+              width: 120,
+              height: 120,
+                
+            }}
+        />
+        {/* <Text style={styles.lockText}>Buka Pintu</Text> */}
       </TouchableOpacity>
       
       <View style={styles.passwordBox}>

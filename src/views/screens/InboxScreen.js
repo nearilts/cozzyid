@@ -1,40 +1,43 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
 import ListChat from './ListChat';
 import ListFriend from './ListFriend';
 import ListRequest from './ListRequest';
 import AddFriend from './AddFriend';
 import COLORS from '../../const/color';
 
+const tabs = [
+  { name: 'ListChat', title: 'List Chat', component: ListChat },
+  { name: 'ListFriend', title: 'List Friend', component: ListFriend },
+  { name: 'ListRequest', title: 'List Request', component: ListRequest },
+  { name: 'AddFriend', title: 'Add Friend', component: AddFriend },
+];
+
 export default function InboxScreen() {
-  const Tab = createMaterialTopTabNavigator();
+  const [activeTab, setActiveTab] = useState('ListChat');
+  const ActiveComponent = tabs.find(tab => tab.name === activeTab).component;
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Cozzy Chat</Text>
-      <Tab.Navigator
-        screenOptions={{
-          tabBarItemStyle: { marginTop: 30 },
-          tabBarInactiveTintColor: COLORS.grey,
-          tabBarActiveTintColor: COLORS.dark,
-          tabBarLabelStyle: {
-            fontSize: 16,
-            fontWeight: 'bold',
-          },
-          tabBarStyle: {
-            backgroundColor: COLORS.white,
-          },
-          tabBarIndicatorStyle: {
-            backgroundColor: COLORS.dark,
-          },
-        }}
-      >
-        <Tab.Screen name="ListChat" options={{ title: "List Chat" }} component={ListChat} />
-        <Tab.Screen name="ListFriend" options={{ title: "List Friend" }} component={ListFriend} />
-        <Tab.Screen name="ListRequest" options={{ title: "List Request" }} component={ListRequest} />
-        <Tab.Screen name="AddFriend" options={{ title: "Add Friend" }} component={AddFriend} />
-      </Tab.Navigator>
+      
+      <View style={styles.tabContainer}>
+        {tabs.map(tab => (
+          <TouchableOpacity
+            key={tab.name}
+            style={[styles.tabButton, activeTab === tab.name && styles.activeTab]}
+            onPress={() => setActiveTab(tab.name)}
+          >
+            <Text style={[styles.tabText, activeTab === tab.name && styles.activeTabText]}>
+              {tab.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+      
+      <View style={{ flex: 1 }}>
+        <ActiveComponent />
+      </View>
     </View>
   );
 }
@@ -42,15 +45,39 @@ export default function InboxScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white, // Background color for the entire screen
+    backgroundColor: COLORS.white,
   },
   header: {
-    top:20,
-    marginLeft:20,
-    fontSize: 24, // Size of the header text
-    fontWeight: 'bold', // Font weight of the header text
-    padding: 16, // Padding around the header text
-    backgroundColor: COLORS.lightGrey, // Background color of the header,
-    color:COLORS.primary
+    top: 20,
+    marginLeft: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    padding: 16,
+    backgroundColor: COLORS.lightGrey,
+    color: COLORS.primary,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+    backgroundColor: COLORS.white,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.dark,
+  },
+  tabButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  tabText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.grey,
+  },
+  activeTab: {
+    borderBottomWidth: 3,
+    borderBottomColor: COLORS.dark,
+  },
+  activeTabText: {
+    color: COLORS.dark,
   },
 });

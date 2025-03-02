@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Linking } from 'react-native';
+import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
 import COLORS from '../../../const/color';
 import * as Clipboard from 'expo-clipboard';
 import { BASE_URL, URLS } from '../../../config';
@@ -59,8 +59,8 @@ const OnOfLight = ({navigation, route}) => {
             }
         });
         console.log('response lampu', response.data.cek.data);
-            setProfil(response.data.cek.data);
-            Alert.alert("Lampu ", response.data.cek.data.params.switch);
+        setProfil(response.data.cek.data);
+        Alert.alert("Lampu ", response.data.cek.data.params.switch);
         setIsLoading(false);
 
     } catch (error) {
@@ -92,7 +92,17 @@ const OnOfLight = ({navigation, route}) => {
         style={profil?.params?.switch === 'on' ? styles.lockButton : styles.lockButtonoff}
         onPress={handleOpenDoor}
       >
-        <Text style={styles.lockText}>Lampu {profil?.params?.switch ?? 'tidak tersedia'}</Text>
+         <Image
+              source={profil?.params?.switch === 'on' ? require('../../../assets/images/listrikon.png') : require('../../../assets/images/listrikoff.png')}
+              resizeMode='contain'
+              style={{
+                width: 120,
+                height: 120,
+                  
+              }}
+          />
+
+        {/* <Text style={styles.lockText}>Lampu {profil?.params?.switch ?? 'tidak tersedia'}</Text> */}
       </TouchableOpacity>
       
       <View style={styles.passwordBox}>

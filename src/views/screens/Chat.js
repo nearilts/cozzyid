@@ -6,8 +6,13 @@ import { BASE_URL_CHAT } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { launchImageLibrary, launchCamera } from 'expo-image-picker';
+import { useNavigation } from '@react-navigation/native';
 
-const Chat = ({ navigation, route }) => {
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+const Chat = ({  route }) => {
+  const navigation = useNavigation();
+
   const { id, name } = route.params.id; // Destructure id and name
   const [messages, setMessages] = useState([]);
   const [infogrup, setinfogrup] = useState([]);
@@ -142,11 +147,25 @@ const Chat = ({ navigation, route }) => {
       userInfo = JSON.parse(userInfo);
       let token = userInfo.data.token;
       const formDatas = new FormData();
-      formDatas.append('file[]', {
-        uri: files.uri,
-        name: files.fileName,
-        type: files.type,
-      });
+      if (files) {
+           const fileUri = files.uri;
+           const fileInfo = await FileSystem.getInfoAsync(fileUri);
+           
+           if (fileInfo.exists) {
+             const fileBlob = {
+               uri: fileUri,
+               name: fileUri.split("/").pop(),
+               type: "image/jpeg", 
+             };
+     
+             formDatas.append("file[]", fileBlob);
+           } else {
+             console.error("File tidak ditemukan:", fileUri);
+             alert("File tidak ditemukan, coba unggah ulang.");
+             setIsLoading(false);
+             return;
+           }
+         }
       console.log('formDatas:', formDatas);
 
       const response = await axios.post(`${url}file-uploads`, formDatas, {
@@ -171,46 +190,69 @@ const Chat = ({ navigation, route }) => {
     }
   };
 
+
   const handleFilePick = async () => {
     Alert.alert(
       "Pilih Sumber Gambar",
-      "Pilih Kamera Atau Galeri",
+      "Pilih Kamera atau Galeri",
       [
         {
           text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
+          style: "cancel",
         },
         {
           text: "Camera",
-          onPress: () => launchCamera({ mediaType: 'photo', quality: 1 }, (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.error('ImagePicker Error: ', response.error);
-            } else {
-              // setFile(response.assets[0]);
-              kirim_file(response.assets[0]);
+          onPress: async () => {
+            const { status } = await ImagePicker.requestCameraPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses kamera.");
+              return;
             }
-          })
+  
+            try {
+              const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsEditing: true,
+              });
+  
+              if (!result.canceled) {
+                kirim_file(result.assets[0]); // Mengirim file yang dipilih
+              }
+            } catch (error) {
+              console.error("Error membuka kamera:", error);
+            }
+          },
         },
         {
           text: "Gallery",
-          onPress: () => launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.error('ImagePicker Error: ', response.error);
-            } else {
-              // setFile(response.assets[0]);
-              kirim_file(response.assets[0]);
+          onPress: async () => {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses galeri.");
+              return;
             }
-          })
-        }
+  
+            try {
+              const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                quality: 1,
+                allowsEditing: true,
+              });
+  
+              if (!result.canceled) {
+                kirim_file(result.assets[0]); // Mengirim file yang dipilih
+              }
+            } catch (error) {
+              console.error("Error membuka galeri:", error);
+            }
+          },
+        },
       ],
       { cancelable: true }
     );
   };
+  
   const handleOpenWebView = (url) => () => {
     navigation.navigate('WebViewUrl',url);
 

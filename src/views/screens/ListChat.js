@@ -5,8 +5,11 @@ import { BASE_URL_CHAT } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useNavigation } from '@react-navigation/native';
 
-const ListChat = ({ navigation }) => {
+const ListChat = ({  }) => {
+  const navigation = useNavigation();
+
   const url = BASE_URL_CHAT;
   const [bookings, setBookings] = useState([]); // Inisialisasi state dengan array kosong
 

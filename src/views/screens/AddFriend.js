@@ -5,8 +5,11 @@ import COLORS from '../../const/color';
 import { BASE_URL_CHAT } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-const AddFriend = ({ navigation }) => {
+const AddFriend = ({  }) => {
+  const navigation = useNavigation();
+
   const url = BASE_URL_CHAT;
   const [bookings, setBookings] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');

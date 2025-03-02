@@ -14,6 +14,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { Linking } from 'react-native';
 import CheckBox from 'expo-checkbox';
  '@react-native-community/checkbox';
+ import ModalSelector from 'react-native-modal-selector';
+ import * as ImagePicker from 'expo-image-picker';
+ import * as FileSystem from 'expo-file-system';
 
 const AddCekinOnline = ({ navigation }) => {
     const url = BASE_URL;
@@ -34,7 +37,7 @@ const AddCekinOnline = ({ navigation }) => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log('response', response.data)
+            console.log('responseprofil', response.data)
             setprofil(response.data.data)
 
         } catch (error) {
@@ -69,6 +72,14 @@ const AddCekinOnline = ({ navigation }) => {
         getLocations();
        
       }, []);
+
+    const locationOptions = location.map((loc, index) => ({
+        key: loc.id, 
+        label: loc.title,
+        value: loc.title
+    }));
+
+
   const [formData, setFormData] = useState({
     cekin: startDate.toISOString().split('T')[0],
     cekout: endDate.toISOString().split('T')[0],
@@ -79,6 +90,7 @@ const AddCekinOnline = ({ navigation }) => {
       bukti_pembayaran: null,
     },
   });
+  const [selectedLocation, setSelectedLocation] = useState(formData.locations || "Choose Location");
 
   const kirimdata = async () => {
     try {
@@ -93,38 +105,69 @@ const AddCekinOnline = ({ navigation }) => {
       formDatas.append('catatan', formData.catatan);
       formDatas.append('locations', formData.locations);
       if (formData.files.image) {
-        formDatas.append('image', {
-          uri: formData.files.image.uri,
-          name: formData.files.image.fileName ,
-          type: formData.files.image.type,
-        });
+        const fileUri = formData.files.image.uri;
+        const fileInfo = await FileSystem.getInfoAsync(fileUri);
+        
+        if (fileInfo.exists) {
+          const fileBlob = {
+            uri: fileUri,
+            name: fileUri.split("/").pop(),
+            type: "image/jpeg", 
+          };
+  
+          formDatas.append("image", fileBlob);
+        } else {
+          console.error("File tidak ditemukan:", fileUri);
+          alert("File tidak ditemukan, coba unggah ulang.");
+          setIsLoading(false);
+          return;
+        }
       }
-      if (formData.files.bukti_pembayaran) {
-        formDatas.append('bukti_bayar', {
-          uri: formData.files.bukti_pembayaran.uri,
-          name: formData.files.bukti_pembayaran.fileName ,
-          type: formData.files.bukti_pembayaran.type,
-        });
+
+      
+    
+    if (formData.files.bukti_pembayaran) {
+      const fileUri = formData.files.bukti_pembayaran.uri;
+      const fileInfo = await FileSystem.getInfoAsync(fileUri);
+      
+      if (fileInfo.exists) {
+        const fileBlob = {
+          uri: fileUri,
+          name: fileUri.split("/").pop(),
+          type: "image/jpeg", 
+        };
+
+        formDatas.append("bukti_bayar", fileBlob);
+      } else {
+        console.error("File tidak ditemukan:", fileUri);
+        alert("File tidak ditemukan, coba unggah ulang.");
+        setIsLoading(false);
+        return;
       }
+    }
       console.log('formData', formDatas );
+      console.log('url', `${url}checkins` );
       
       const response = await axios.post(`${url}checkins`, formDatas, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 15000,
       });
       setIsLoading(false);
 
       console.log('response', response.data);
       if (response.data.code == 1) {
         alert('Data Success Save');
-        navigation.navigate('Home')
+        navigation.navigate('MainTab')
       } else {
         alert('Gagal Simpan');
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error Upload:", error.message);
+      setIsLoading(false);
     }
   };
   const handleSave = () => {
@@ -149,56 +192,80 @@ const AddCekinOnline = ({ navigation }) => {
     console.log('formData', formData );
 
   };
-  const handleFilePick = async (fileType) => {
-    Alert.alert(
-      "Pilih Sumber Gambar",
-      "Pilih Kamera Atau Galery",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Camera",
-          onPress: () => launchCamera({ mediaType: 'photo', quality: 1 }, (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.error('ImagePicker Error: ', response.error);
-            } else {
-              setFormData({
-                ...formData,
+  
+const handleFilePick = async (fileType) => {
+  Alert.alert(
+    "Pilih Sumber Gambar",
+    "Pilih Kamera atau Galeri",
+    [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Camera",
+        onPress: async () => {
+          const { status } = await ImagePicker.requestCameraPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses kamera.");
+            return;
+          }
+
+          try {
+            const result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              quality: 1,
+              allowsEditing: true, // Opsional: aktifkan crop sebelum upload
+            });
+
+            if (!result.canceled) {
+              setFormData((prevFormData) => ({
+                ...prevFormData,
                 files: {
-                  ...formData.files,
-                  [fileType]: response.assets[0],
+                  ...prevFormData.files,
+                  [fileType]: result.assets[0],
                 },
-              });
+              }));
             }
-          })
+          } catch (error) {
+            console.error("Error membuka kamera:", error);
+          }
         },
-        {
-          text: "Gallery",
-          onPress: () => launchImageLibrary({ mediaType: 'photo', quality: 1 }, (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.error('ImagePicker Error: ', response.error);
-            } else {
-              setFormData({
-                ...formData,
+      },
+      {
+        text: "Gallery",
+        onPress: async () => {
+          const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+          if (status !== 'granted') {
+            Alert.alert("Izin Ditolak", "Aplikasi membutuhkan izin untuk mengakses galeri.");
+            return;
+          }
+
+          try {
+            const result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              quality: 1,
+              allowsEditing: true,
+            });
+
+            if (!result.canceled) {
+              setFormData((prevFormData) => ({
+                ...prevFormData,
                 files: {
-                  ...formData.files,
-                  [fileType]: response.assets[0],
+                  ...prevFormData.files,
+                  [fileType]: result.assets[0],
                 },
-              });
+              }));
             }
-          })
-        }
-      ],
-      { cancelable: true }
-    );
-  };
+          } catch (error) {
+            console.error("Error membuka galeri:", error);
+          }
+        },
+      },
+    ],
+    { cancelable: true }
+  );
+};
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
@@ -260,17 +327,17 @@ const handleOpenURL = (url) => {
                 <View style={{}}>
                   <Text style={{ paddingLeft: 10, paddingTop: 20, fontSize: 15, color: COLORS.dark, fontWeight: 'bold',marginBottom:20 }}> Lokasi</Text>
                     <View style={styles.pickerContainer}>
-                        <Picker
-                        selectedValue={formData.locations}
-                        onValueChange={(itemValue) => handleInputChange('locations', itemValue)}
-                        style={styles.picker}
-                        >
-                            {/* buat picker item dari api locations */}
-                            <Picker.Item label="Choose Location" value="" />
-                                {location.map((loc) => (
-                                    <Picker.Item key={loc.id} label={loc.title} value={loc.title} />
-                                ))}
-                        </Picker>
+                    <ModalSelector
+                          data={locationOptions}
+                          initValue="Choose Location"
+                          onChange={(option) => handleInputChange("locations", option.value)}
+                      >
+                          <TextInput
+                              style={styles.picker}
+                              editable={false}
+                              value={formData.locations ? locationOptions.find(d => d.value === formData.locations)?.label : "Choose Location"}
+                          />
+                      </ModalSelector>
                     </View>
                     </View>
             
@@ -360,20 +427,21 @@ const handleOpenURL = (url) => {
 };
 const styles = StyleSheet.create({
 slide: {
-justifyContent: 'center',
-alignItems: 'center',
-paddingTop: 15,
+  justifyContent: 'center',
+  alignItems: 'center',
+  paddingTop: 15,
 },
 input: {
-width: 299,
-height: 60,
-borderColor: '#ddd',
-borderWidth: 1,
-borderRadius: 10,
-paddingHorizontal: 10,
-marginBottom: 10,
-backgroundColor:COLORS.white,
-color: COLORS.dark,
+  width: 299,
+  height: 60,
+  borderColor: '#ddd',
+  borderWidth: 1,
+  borderRadius: 10,
+  paddingHorizontal: 10,
+  marginBottom: 10,
+  backgroundColor:COLORS.white,
+  color: COLORS.dark,
+  left:-10
 },
 featureRow: {
 borderWidth: 1,
@@ -435,6 +503,8 @@ inputContainer: {
   marginBottom: 20,
 },
 pickerContainer: {
+  left:-10,
+    paddingLeft:10,
     borderWidth: 1,
     borderColor: COLORS.grey,
     borderRadius: 10,
@@ -444,6 +514,20 @@ picker: {
     height: 50,
     width:300,
     color: COLORS.dark,
+},
+label: {
+  fontSize: 16,
+  marginBottom: 5,
+},
+selector: {
+  borderWidth: 1,
+  borderColor: '#ccc',
+  padding: 10,
+  borderRadius: 5,
+},
+selectedText: {
+  fontSize: 16,
+  color: '#000',
 },
 });
 
