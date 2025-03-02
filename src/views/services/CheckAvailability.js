@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import rooms from '../../const/rooms';
 import details from '../../const/details';
 import CheckBox from 'expo-checkbox';
- '@react-native-community/checkbox';
+//  '@react-native-community/checkbox';
 import DatePickerInput from '../../component/DatePickerInput';
 import { addDays } from 'date-fns';
 import { BASE_URL } from '../../config';

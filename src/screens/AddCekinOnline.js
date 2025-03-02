@@ -13,7 +13,7 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Linking } from 'react-native';
 import CheckBox from 'expo-checkbox';
- '@react-native-community/checkbox';
+//  '@react-native-community/checkbox';
  import ModalSelector from 'react-native-modal-selector';
  import * as ImagePicker from 'expo-image-picker';
  import * as FileSystem from 'expo-file-system';
