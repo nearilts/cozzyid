@@ -6,6 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import COLORS from '../../../const/color';
 import { BASE_URL } from '../../../config';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const CekinOnlineWifi = ({ navigation }) => {
 
@@ -85,6 +86,7 @@ const CekinOnlineWifi = ({ navigation }) => {
   
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <BackButtonHeader title="List Wifi" backgroundColor={COLORS.primary} arrowColor="#fff" />
             
 
             <View style={{  paddingLeft: 20, paddingBottom: 25, top:30 }}>

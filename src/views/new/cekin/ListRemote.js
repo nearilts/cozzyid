@@ -6,6 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../../../config';
 import COLORS from '../../../const/color';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const ListRemote = ({ navigation, route }) => {
 
@@ -74,6 +75,7 @@ const ListRemote = ({ navigation, route }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
             
+            <BackButtonHeader title="Remote" backgroundColor={COLORS.primary} arrowColor="#fff" />
 
             <View style={{ paddingBottom: 25, paddingTop:45 }}>
                 <View style={{ borderRadius: 30, backgroundColor: COLORS.white }}>

@@ -56,7 +56,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
-                                width:65,textAlign: "center",
+                                width:95,textAlign: "center",
                             }}>Home</Text>
                         </View>
                     ),
@@ -73,7 +73,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
-                                width:65,textAlign: "center",
+                                width:95,textAlign: "center",
                             }}>Pesanan</Text>
                         </View>
                     ),
@@ -89,7 +89,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
-                                width:65,textAlign: "center",
+                                width:95,textAlign: "center",
                             }}>Aktivitas</Text>
                         </View>
                     ),
@@ -105,7 +105,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
-                                width:65,textAlign: "center",
+                                width:95,textAlign: "center",
                             }}>Transaksi</Text>
                         </View>
                     ),
@@ -121,7 +121,7 @@ const BottomTabNavigation = () => {
                             <Text style={{
                                 ...FONTS.body4,
                                 color: focused ? COLORS.primary : dark ? COLORS.gray3 : COLORS.gray3,
-                                width:65,textAlign: "center",
+                                width:95,textAlign: "center",
                             }}>Profil</Text>
                         </View>
                     ),

@@ -6,6 +6,7 @@ import axios from 'axios';
 import { BASE_URL, URLS } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const { width } = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
@@ -173,16 +174,16 @@ const ListProduct = ({ navigation }) => {
     );
 
     return (
-        <ScrollView style={{ backgroundColor: COLORS.white }}>
+        <SafeAreaView>
+            <BackButtonHeader title="Product & Food" backgroundColor={COLORS.primary} arrowColor="#fff" />
+            <ScrollView style={{ backgroundColor: COLORS.white }}>
+
             <Spinner visible={isLoading} />
             <StatusBar backgroundColor={COLORS.primary} />
+
             <View style={style.header}>
                 <View>
-                    <View style={{ flexDirection: 'row', top: 10 }}>
-                        <Text style={{ fontSize: 28, color: COLORS.white, fontWeight: 'bold', }}>
-                            Product & Food
-                        </Text>
-                    </View>
+                   
                     <Text style={{ marginTop: 5, fontSize: 18, color: COLORS.white }}>
                         Belanja Aman, dan Murah?
                     </Text>
@@ -230,12 +231,12 @@ const ListProduct = ({ navigation }) => {
                 renderItem={({ item }) => <Card hotel={item} />}
             />
         </ScrollView>
+        </SafeAreaView>
     );
 };
 
 const style = StyleSheet.create({
     header: {
-        marginTop: 30,
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 20,

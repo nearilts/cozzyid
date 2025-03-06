@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import COLORS from '../../../const/color'; // Pastikan file COLORS tersedia
 import { BASE_URL } from '../../../config'; // Ganti dengan URL base API Anda
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const RemoteAc = ({navigation, route}) => {
     const [acStatus, setAcStatus] = useState({
@@ -76,6 +77,9 @@ const RemoteAc = ({navigation, route}) => {
     }, []);
 
     return (
+        <SafeAreaView style={{flex:1}}>
+        <BackButtonHeader title="Remote Ac" backgroundColor={COLORS.primary} arrowColor="#fff" />
+  
         <View style={styles.container}>
             {/* Power Button */}
             <TouchableOpacity
@@ -140,6 +144,7 @@ const RemoteAc = ({navigation, route}) => {
                 ))}
             </View>
         </View>
+        </SafeAreaView>
     );
 };
 

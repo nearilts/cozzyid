@@ -59,8 +59,8 @@ const SearchHotel = ({ navigation }) => {
     return (
         <View style={{ flex: 1, backgroundColor: COLORS.white }}>
             <StatusBar translucent backgroundColor={COLORS.transparent} />
-            <View style={{ flexDirection: "row", width: '100%', height: 50, backgroundColor: COLORS.white, marginTop: 30 }}>
-                <Icon name="arrow-back" size={35} color={COLORS.primary} onPress={navigation.goBack} />
+            <View style={{ flexDirection: "row", width: '100%', height: 50, backgroundColor: COLORS.white, marginTop:50 }}>
+                <Icon name="arrow-back" size={35} color={COLORS.primary}  onPress={() => navigation.goBack()} />
                 <View style={{ alignItems: 'center' }}>
                     <Text style={{ marginLeft: 140, marginTop: 5, fontSize: 18, color: COLORS.dark }}>Search</Text>
                 </View>

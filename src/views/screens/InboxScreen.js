@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import ListChat from './ListChat';
 import ListFriend from './ListFriend';
 import ListRequest from './ListRequest';
 import AddFriend from './AddFriend';
 import COLORS from '../../const/color';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const tabs = [
   { name: 'ListChat', title: 'List Chat', component: ListChat },
@@ -18,8 +19,11 @@ export default function InboxScreen() {
   const ActiveComponent = tabs.find(tab => tab.name === activeTab).component;
 
   return (
+    <SafeAreaView style={{flex:1}}>
+        <BackButtonHeader title="Cozzy Chat" backgroundColor={COLORS.primary} arrowColor="#fff" />
+  
+
     <View style={styles.container}>
-      <Text style={styles.header}>Cozzy Chat</Text>
       
       <View style={styles.tabContainer}>
         {tabs.map(tab => (
@@ -39,6 +43,7 @@ export default function InboxScreen() {
         <ActiveComponent />
       </View>
     </View>
+    </SafeAreaView>
   );
 }
 

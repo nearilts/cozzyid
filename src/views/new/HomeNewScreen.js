@@ -9,12 +9,14 @@ import ButtomIcon from './components/ButtomIcon';
 import ListHotelBig from './components/ListHotelBig';
 import CekValidasi from './components/CekValidasi';
 import { useTheme } from '../../theme/ThemeProvider';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const HomeNewScreen = ({ navigation }) => {
 
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor:COLORS.white }}>
+      {/* <BackButtonHeader title="Home" backgroundColor={COLORS.primary} arrowColor="#fff" /> */}
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <CekValidasi />

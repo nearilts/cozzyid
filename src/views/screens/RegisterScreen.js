@@ -86,6 +86,13 @@ const RegisterScreen = ({navigation}) => {
 
               </View>
 
+              <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 10,marginBottom: 20, flexDirection: 'row'}}>
+                <Text style={{color: COLORS.dark}}>Sudah punya akun? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                  <Text style={{color: COLORS.primary, fontWeight: 'bold', fontSize: 19}}>Masuk Sekarang</Text>
+                </TouchableOpacity>
+              </View>
+
                 <TouchableOpacity style={{backgroundColor: COLORS.primary, padding: 10, alignItems:'center', borderRadius: 10}} onPress={() => {
                     registers(email, password,first,last,phone,referral,navigation)
                 }}>

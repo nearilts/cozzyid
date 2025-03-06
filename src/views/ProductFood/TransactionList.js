@@ -1,10 +1,11 @@
-import { View, Text, StatusBar, ScrollView, StyleSheet, FlatList, Dimensions, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StatusBar, ScrollView, StyleSheet, FlatList, Dimensions, TouchableOpacity, Alert, SafeAreaView } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import COLORS from '../../const/color';
 import axios from 'axios';
 import { BASE_URL } from '../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const { width } = Dimensions.get('screen');
 const cardWidth = width - 40; // Adjusted for padding
@@ -85,18 +86,20 @@ const TransactionList = ({ navigation }) => {
     };
 
     return (
+        <SafeAreaView>
+        <BackButtonHeader title="Daftar Transaksi" backgroundColor={COLORS.primary} arrowColor="#fff" />
+
         <ScrollView style={{ backgroundColor: COLORS.white }}>
             <Spinner visible={isLoading} />
             <StatusBar backgroundColor={COLORS.primary} />
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Daftar Transaksi</Text>
-            </View>
+          
             <FlatList
                 data={transactions}
                 renderItem={renderTransaction}
                 keyExtractor={item => item.id.toString()} // Assuming each transaction has a unique 'id'
             />
         </ScrollView>
+        </SafeAreaView>
     );
 };
 

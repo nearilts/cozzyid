@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import COLORS from '../../../const/color'; // Pastikan file COLORS tersedia
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../../../config';
 import axios from 'axios';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const RemoteTv = ({navigation, route}) => {
     const url = BASE_URL;
@@ -39,6 +40,9 @@ const RemoteTv = ({navigation, route}) => {
         }
     };
     return (
+        <SafeAreaView style={{flex:1}}>
+        <BackButtonHeader title="Remote Tv" backgroundColor={COLORS.primary} arrowColor="#fff" />
+  
         <View style={styles.container}>
             {/* Power Button */}
             <TouchableOpacity
@@ -122,6 +126,8 @@ const RemoteTv = ({navigation, route}) => {
                 <Text style={styles.buttonText}>Back</Text>
             </TouchableOpacity>
         </View>
+        
+        </SafeAreaView>
     );
 };
 

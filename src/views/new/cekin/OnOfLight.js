@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Image } from 'react-native';
+import { View, Text, Button, TouchableOpacity, Alert, StyleSheet, Image, SafeAreaView } from 'react-native';
 import COLORS from '../../../const/color';
 import * as Clipboard from 'expo-clipboard';
 import { BASE_URL, URLS } from '../../../config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const OnOfLight = ({navigation, route}) => {
   const item = route.params;
@@ -82,6 +83,9 @@ const OnOfLight = ({navigation, route}) => {
   };
 
   return (
+     <SafeAreaView style={{flex:1}}>
+      <BackButtonHeader title="Listrik" backgroundColor={COLORS.primary} arrowColor="#fff" />
+
     <View style={styles.container}>
       <Spinner visible={isLoading} />
 
@@ -113,6 +117,7 @@ const OnOfLight = ({navigation, route}) => {
         <Text style={styles.copyLinkText}>Copy Link</Text>
       </TouchableOpacity>
     </View>
+      </SafeAreaView>
   );
 };
 

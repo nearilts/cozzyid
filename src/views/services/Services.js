@@ -7,6 +7,7 @@ const {width} = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
 import axios from 'axios';
 import { BASE_URL } from '../../config';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const Services = ({navigation, route}) => {
     let listData = route.params;
@@ -115,16 +116,11 @@ const Services = ({navigation, route}) => {
 
     return (
     <SafeAreaView style={{flex:1, backgroundColor: COLORS.white}}>
-    <StatusBar  backgroundColor={COLORS.primary} />
+    <BackButtonHeader title="List Hotel" backgroundColor={COLORS.primary} arrowColor="#fff" />
         
         <View style={style.header}>
         <View>
-          <View style={{flexDirection: 'row', top:10}}>
-            <Text style={{fontSize: 28, color:COLORS.white}}>List,</Text>
-            <Text style={{fontSize: 28, color:COLORS.white, fontWeight: 'bold', marginLeft: 10}}>
-              Hotel
-            </Text>
-          </View>
+          
           <Text style={{marginTop: 5, fontSize: 18, color: COLORS.white}}>
           Booking hotel murah, nyaman & terdekat?
           </Text>
@@ -155,7 +151,6 @@ const style = StyleSheet.create({
     color: 'gray',
   },
     header: {
-      marginTop: 20,
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: 20,

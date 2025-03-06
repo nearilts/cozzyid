@@ -7,6 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Picker } from '@react-native-picker/picker';
 import ModalSelector from 'react-native-modal-selector';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import BackButtonHeader from '../../component/BackButtonHeader';
 
 const { width } = Dimensions.get('screen');
 const cardWidth = width - 40; // Adjusted for padding
@@ -254,20 +256,13 @@ const ShopCart = ({ navigation }) => {
     };
 
     return (
+        <SafeAreaView >
+        <BackButtonHeader title="Belanja Anda" backgroundColor={COLORS.primary} arrowColor="#fff" />
+
         <ScrollView style={{ backgroundColor: COLORS.secondgrey }}>
             <Spinner visible={isLoading} />
             <StatusBar backgroundColor={COLORS.primary} />
-            <View style={styles.header}>
-                <View>
-                    <View style={{ flexDirection: 'row', top: 10 }}>
-                        <Text style={{ fontSize: 28, color: COLORS.white }}>Keranjang,</Text>
-                        <Text style={{ fontSize: 28, color: COLORS.white, fontWeight: 'bold', marginLeft: 10 }}>
-                            Belanja Anda
-                        </Text>
-                    </View>
-                   
-                </View>
-            </View>
+            
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={cart}
@@ -370,6 +365,7 @@ const ShopCart = ({ navigation }) => {
                 <Text style={styles.buttonText}>Bayar</Text>
             </TouchableOpacity>
         </ScrollView>
+                </SafeAreaView>
     );
 };
 

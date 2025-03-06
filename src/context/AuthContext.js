@@ -88,6 +88,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registers = (email, password,first_name,last_name,phone,referral,navigation) => {
+    if (!email || !password || !first_name || !last_name || !phone) {
+      alert("Semua field wajib diisi!");
+      return;
+  }
+  
     setIsLoading(true);
     let term = 1;
     let locale = 'apk'+term;

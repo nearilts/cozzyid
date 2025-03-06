@@ -6,6 +6,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from '../../../config';
 import COLORS from '../../../const/color';
+import BackButtonHeader from '../../../component/BackButtonHeader';
 
 const ListDoorLock = ({ navigation }) => {
 
@@ -73,6 +74,7 @@ const ListDoorLock = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
+            <BackButtonHeader title="Door Lock" backgroundColor={COLORS.primary} arrowColor="#fff" />
             
 
             <View style={{  paddingLeft: 20, paddingBottom: 25, top:30 }}>
