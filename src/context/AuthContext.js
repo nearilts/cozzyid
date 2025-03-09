@@ -5,6 +5,7 @@ import { BASE_URL, BASE_URL_CHAT } from '../config';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { Platform, Alert } from "react-native";
 
 export const AuthContext = createContext();
 
@@ -88,10 +89,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const registers = (email, password,first_name,last_name,phone,referral,navigation) => {
-    if (!email || !password || !first_name || !last_name || !phone) {
-      alert("Semua field wajib diisi!");
-      return;
-  }
+
+    if (Platform.OS === "android") {
+      if (!email || !password || !first_name || !last_name || !phone) {
+        alert("Semua field wajib diisi!");
+        return;
+      }
+    }else{
+      if (!email || !password || !first_name || !last_name) {
+        alert("Semua field wajib diisi!");
+        return;
+      }
+    }
   
     setIsLoading(true);
     let term = 1;

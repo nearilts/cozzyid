@@ -15,7 +15,8 @@ const DatePickerInputs = ({ type, onChange, defaultDate }) => {
         <TouchableOpacity  style={{padding:15}} onPress={() => setOpen(true)}>
           <TextInput
             style={{ 
-              left:-15,
+              paddingLeft:20,
+              paddingRight:20,
               width: 299,
               height: 60,
               borderColor: '#ddd',

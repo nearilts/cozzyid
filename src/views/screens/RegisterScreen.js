@@ -1,10 +1,11 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, SafeAreaView, ScrollView } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, SafeAreaView, ScrollView, Image } from 'react-native'
 import React, { createContext,useContext, useState } from 'react'
 import COLORS from '../../const/color'
 import { AuthContext } from '../../context/AuthContext'
 import Spinner from 'react-native-loading-spinner-overlay'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ContactInfo from '../../component/ContactInfo'
+import { KeyboardAvoidingView, Platform } from 'react-native';
 
 const RegisterScreen = ({navigation}) => {
 
@@ -18,12 +19,14 @@ const RegisterScreen = ({navigation}) => {
     const {isLoading,registers} = useContext(AuthContext);
 
   return (
-    <SafeAreaView style={{...style.container, backgroundColor:COLORS.white}}>
-      <Spinner visible={isLoading} />
-      <ImageBackground style={{ flex: 1, height: 170 }} source={require('../../assets/login_top_image.png')}>
+    <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"} 
+          style={{ flex: 1 }}
+      >
+          <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={{ flexGrow: 1 }}>
+              <Image style={{ width:'100%', height: 170 }} source={require('../../assets/login_top_image.png')} />
        
-          {/* <ScrollView> */}
-          <View style={{ alignItems: 'center', top: 180 }}>
+          <View style={{ alignItems: 'center', }}>
             <View style={{ justifyContent: 'center',  paddingBottom:20 }}>
               <View style={{ alignItems:'center' }}>
                 <Text style={{ color: COLORS.dark, fontWeight: 'bold', fontSize: 25 }}>Cozzy</Text>
@@ -39,6 +42,8 @@ const RegisterScreen = ({navigation}) => {
                 <TextInput
                   style={{flex: 1, fontSize: 18,color:COLORS.dark}} value={email} onChangeText={text => setEmail(text)} placeholder='Email'  placeholderTextColor={COLORS.dark} />
               </View>
+              <Text style={{color:COLORS.red  }}>* Wajib Di isi</Text>
+
               <View style={{paddingTop:20}}>
                 
               <View style={{...style.inputContainer}}>
@@ -47,6 +52,7 @@ const RegisterScreen = ({navigation}) => {
               </View>
 
               </View>
+              <Text style={{color:COLORS.red  }}>* Wajib Di isi</Text>
               
               <View style={{paddingTop:20}}>
                 
@@ -56,6 +62,7 @@ const RegisterScreen = ({navigation}) => {
                 </View>
 
               </View>
+              <Text style={{color:COLORS.red  }}>* Wajib Di isi</Text>
               
               <View style={{paddingTop:20}}>
                 
@@ -65,6 +72,7 @@ const RegisterScreen = ({navigation}) => {
                 </View>
 
               </View>
+              <Text style={{color:COLORS.red  }}>* Wajib Di isi</Text>
 
               <View style={{paddingTop:20}}>
                 
@@ -76,6 +84,7 @@ const RegisterScreen = ({navigation}) => {
                 </View>
 
               </View>
+              {Platform.OS === 'android' && <Text style={{color: COLORS.red}}>* Wajib Di isi</Text>}
               
               <View style={{paddingTop:20,paddingBottom:20}}>
                 
@@ -104,10 +113,8 @@ const RegisterScreen = ({navigation}) => {
               
           </View>
 
-          {/* </ScrollView> */}
-        </ImageBackground>
-        
-    </SafeAreaView>
+    </ScrollView>
+</KeyboardAvoidingView>
   )
 }
 const style = StyleSheet.create({

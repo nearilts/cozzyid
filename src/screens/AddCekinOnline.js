@@ -27,6 +27,7 @@ const AddCekinOnline = ({ navigation }) => {
     const [checked, setChecked] = useState(false);
 
     const [profil, setprofil] = useState({})
+    const [users, setusers] = useState({})
     const fetchprofil = async () => {
         try {
             let userInfo = await AsyncStorage.getItem('userInfo');
@@ -37,8 +38,10 @@ const AddCekinOnline = ({ navigation }) => {
                     Authorization: `Bearer ${token}`
                 }
             });
-            console.log('responseprofil', response.data)
-            setprofil(response.data.data)
+            console.log('responseprofil', response.data[0])
+            console.log('responsesetusers', response.data[0].user)
+            setprofil(response.data[0].data)
+            setusers(response.data[0].user)
 
         } catch (error) {
             console.error(error);
@@ -85,6 +88,7 @@ const AddCekinOnline = ({ navigation }) => {
     cekout: endDate.toISOString().split('T')[0],
     catatan: '',
     locations: '',
+    phone: '',
     files: {
       image: null,
       bukti_pembayaran: null,
@@ -104,6 +108,7 @@ const AddCekinOnline = ({ navigation }) => {
       formDatas.append('cekout', formData.cekout);
       formDatas.append('catatan', formData.catatan);
       formDatas.append('locations', formData.locations);
+      formDatas.append('phone', formData.phone);
       if (formData.files.image) {
         const fileUri = formData.files.image.uri;
         const fileInfo = await FileSystem.getInfoAsync(fileUri);
@@ -367,6 +372,22 @@ const handleOpenURL = (url) => {
                 />
               </View>
 
+              { !users?.phone ? (
+                <>
+                 <Text style={{ paddingLeft: 45, paddingTop: 10, fontSize: 15, color: COLORS.dark, fontWeight: 'bold' }}> Phone</Text>
+                  <View style={styles.slide}>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Isi Phone No"
+                      placeholderTextColor={COLORS.dark}
+                      onChangeText={(value) => handleInputChange('phone', value)}
+                    />
+                  </View>
+                </>
+                ): (
+                <Text style={{ paddingLeft: 45, paddingTop: 10, paddingBottom: 10, fontSize: 15, color: COLORS.dark, fontWeight: 'bold' }}> Nomor Hp Sudah ada.</Text>
+              )}
+
               { !isProfileAvailable ? (
                 <>
                 <Text style={{ paddingLeft: 45, paddingTop: 10, paddingBottom: 10, fontSize: 15, color: COLORS.dark, fontWeight: 'bold' }}>Foto KTP</Text>
@@ -441,70 +462,71 @@ input: {
   marginBottom: 10,
   backgroundColor:COLORS.white,
   color: COLORS.dark,
-  left:-10
+  paddingLeft:20,
+  paddingRight:30
 },
 featureRow: {
-borderWidth: 1,
-borderRadius: 10,
-borderColor: COLORS.grey,
-flexDirection: 'row',
-paddingTop: 20,
-paddingLeft: 20,
-alignItems: 'center',
+  borderWidth: 1,
+  borderRadius: 10,
+  borderColor: COLORS.grey,
+  flexDirection: 'row',
+  paddingTop: 20,
+  paddingLeft: 20,
+  alignItems: 'center',
 },
 featureItem: {
-paddingRight: 20,
-alignItems: 'center',
+  paddingRight: 20,
+  alignItems: 'center',
 },
 iconContainer: {
-width: 130,
-height: 130,
-borderRadius: 15,
-backgroundColor: COLORS.white,
-justifyContent: 'center',
-alignItems: 'center',
+  width: 130,
+  height: 130,
+  borderRadius: 15,
+  backgroundColor: COLORS.white,
+  justifyContent: 'center',
+  alignItems: 'center',
 },
 imagePreview: {
-width: 130,
-height: 130,
-borderRadius: 15,
+  width: 130,
+  height: 130,
+  borderRadius: 15,
 },
 signature: {
-width: 300,
-height: 200,
-borderWidth: 1,
-borderColor: COLORS.grey,
-marginTop: 10,
+  width: 300,
+  height: 200,
+  borderWidth: 1,
+  borderColor: COLORS.grey,
+  marginTop: 10,
 },
 signatureButtons: {
-flexDirection: 'row',
-justifyContent: 'space-around',
-marginTop: 10,
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  marginTop: 10,
 },
 clearButton: {
-backgroundColor: COLORS.grey,
-paddingVertical: 10,
-paddingHorizontal: 20,
-borderRadius: 10,
+  backgroundColor: COLORS.grey,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 10,
 },
 confirmButton: {
-backgroundColor: COLORS.primary,
-paddingVertical: 10,
-paddingHorizontal: 20,
-borderRadius: 10,
+  backgroundColor: COLORS.primary,
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 10,
 },
 buttonText: {
-color: COLORS.white,
-fontSize: 16,
-fontWeight: 'bold',
+  color: COLORS.white,
+  fontSize: 16,
+  fontWeight: 'bold',
 },
 inputContainer: {
   marginHorizontal: 20,
   marginBottom: 20,
 },
 pickerContainer: {
-  left:-10,
     paddingLeft:10,
+    paddingRight:10,
     borderWidth: 1,
     borderColor: COLORS.grey,
     borderRadius: 10,
@@ -514,6 +536,7 @@ picker: {
     height: 50,
     width:300,
     color: COLORS.dark,
+    paddingLeft:20
 },
 label: {
   fontSize: 16,

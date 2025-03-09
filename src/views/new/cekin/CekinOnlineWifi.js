@@ -24,7 +24,7 @@ const CekinOnlineWifi = ({ navigation }) => {
                 }
             });
             console.log('response', response.data);
-            setProfil(response.data.data);
+            setProfil(response.data[0].data);
 
         } catch (error) {
             console.error(error);
