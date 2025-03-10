@@ -95,6 +95,8 @@ const BottomTabNavigation = () => {
                     ),
                 }}
             />
+            { Platform.OS === 'android' &&
+            <>
             <Tab.Screen
                 name="Transaction"
                 component={TransactionPpob}
@@ -111,6 +113,9 @@ const BottomTabNavigation = () => {
                     ),
                 }}
             />
+            </>
+            }
+            
             <Tab.Screen
                 name="Profile"
                 component={Profil}

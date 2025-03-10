@@ -1,85 +1,111 @@
-import { View, Text, SafeAreaView, StyleSheet,StatusBar, ScrollView,ImageBackground, TextInput, TouchableOpacity, FlatList,Dimensions, Image,Animated } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
-import { Alert } from 'react-native';
-
+import { 
+    View, Text, SafeAreaView, StyleSheet, StatusBar, ScrollView, 
+    TouchableOpacity, Platform 
+} from 'react-native';
+import React, { useContext } from 'react';
 import COLORS from '../../../const/color';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { BASE_URL } from '../../../config';
-import { addDays } from 'date-fns';
-import { SIZES, icons, images } from '../../../constants';
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { launchImageLibrary, launchCamera } from 'expo-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import { AuthContext } from '../../../context/AuthContext';
-import ImageResizer from 'react-native-image-resizer';
 import ProfilFoto from './ProfilFoto';
 import ButtonProfil from './ButtonProfil';
 
-
 const Profil = ({ navigation }) => {
-    const {isLoading,logouts} = useContext(AuthContext);
-  
-    const HandledLogout = () => {
-        logouts(navigation)
-        
-      };
+    const { logouts, permanentlyDelete } = useContext(AuthContext);
+
+    const HandledLogout = () => logouts(navigation);
+    const HandledDeleteUser = () => permanentlyDelete(navigation);
+
     return (
-        <View style={{ flex: 1, backgroundColor: COLORS.white }}>
+        <SafeAreaView style={styles.container}>
             <StatusBar translucent backgroundColor={COLORS.transparent} />
-            <View style={{width: '100%', height: 50, backgroundColor: COLORS.white, marginTop: 40 }}>
-                <View style={{ alignItems: 'center' }}>
-                    <Text style={{ marginTop: 5, fontSize: 18, color: COLORS.dark }}>Profil</Text>
-                </View>
-               
+            
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Profil</Text>
             </View>
 
-            
-            <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.padding}>
-                        <ProfilFoto />
-                    </View>
-                    <View style={styles.padding}>
-                        <ButtonProfil />
-                    </View>
+            {/* Konten */}
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
+                <View style={styles.section}>
+                    <ProfilFoto />
+                </View>
+                <View style={styles.section}>
+                    <ButtonProfil />
+                </View>
             </ScrollView>
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.btnBooking}  onPress={HandledLogout}>
-                <Text style={styles.btnBookingText}>Keluar</Text>
+
+            {/* Footer dengan tombol */}
+            <View style={styles.footerContainer}>
+                <TouchableOpacity style={styles.btnDelete} onPress={HandledDeleteUser}>
+                    <Text style={styles.btnText}>Hapus Akun</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnLogout} onPress={HandledLogout}>
+                    <Text style={styles.btnText}>Keluar</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
+// Styles
 const styles = StyleSheet.create({
-    padding :{
-        margin:20
-    },
-    footer: {
-        flex:1,
-        flexDirection: 'row',
-        justifyContent:'center',
+    container: {
+        flex: 1,
         backgroundColor: COLORS.white,
-        height: 70,
-        alignItems: 'center',
-        paddingHorizontal: 20,
-        borderTopColor:COLORS.secondgrey,
-        bottom:50
-
-      },
-      btnBooking: {
-        height: 70,
+    },
+    header: {
         width: '100%',
+        height: 50,
+        backgroundColor: COLORS.white,
+        marginTop: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    headerText: {
+        fontSize: 18,
+        color: COLORS.dark,
+        fontWeight: 'bold',
+    },
+    content: {
+        flexGrow: 1, 
+        paddingBottom: 100, // Tambahan padding agar tombol tidak tertutup saat scroll
+    },
+    section: {
+        margin: 20,
+    },
+    footerContainer: {
+        paddingHorizontal: 20,
+        paddingBottom: Platform.OS === 'ios' ? 110 : 70, // Tambahkan padding ekstra untuk iOS
+        backgroundColor: COLORS.white,
+        borderTopColor: COLORS.secondgrey,
+        borderTopWidth: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 10,
+        position: 'absolute', 
+        bottom: 0, 
+        width: '100%',
+    },
+    btnDelete: {
+        width: '100%',
+        height: 55,
+        backgroundColor: COLORS.red,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    btnLogout: {
+        width: '100%',
+        height: 55,
         backgroundColor: COLORS.primary,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-      },
-      btnBookingText: {
-        color: COLORS.white, 
-        fontSize: 20, 
-      },
+    },
+    btnText: {
+        color: COLORS.white,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });
 
 export default Profil;

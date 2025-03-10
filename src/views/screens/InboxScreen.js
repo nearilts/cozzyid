@@ -6,7 +6,7 @@ import ListRequest from './ListRequest';
 import AddFriend from './AddFriend';
 import COLORS from '../../const/color';
 import BackButtonHeader from '../../component/BackButtonHeader';
-
+import { useNavigation } from "@react-navigation/native";
 const tabs = [
   { name: 'ListChat', title: 'List Chat', component: ListChat },
   { name: 'ListFriend', title: 'List Friend', component: ListFriend },
@@ -17,7 +17,8 @@ const tabs = [
 export default function InboxScreen() {
   const [activeTab, setActiveTab] = useState('ListChat');
   const ActiveComponent = tabs.find(tab => tab.name === activeTab).component;
-
+  const navigation = useNavigation();
+  
   return (
     <SafeAreaView style={{flex:1}}>
         <BackButtonHeader title="Cozzy Chat" backgroundColor={COLORS.primary} arrowColor="#fff" />

@@ -198,7 +198,7 @@ export const AuthProvider = ({ children }) => {
       });
 
     
-    };
+  };
   
 
   const isLoggedIn = async () =>{
@@ -237,6 +237,39 @@ export const AuthProvider = ({ children }) => {
   }
 
 
+  const permanentlyDelete = async (navigation) => {
+    let userInfo = await AsyncStorage.getItem('userInfo');
+    userInfo = JSON.parse(userInfo);
+      let token = userInfo.access_token.split('|')[1]
+
+      
+    axios
+    .post(`${BASE_URL}auth/permanently_delete`, {  },{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    },
+      
+    )
+    .then((res) => {
+      console.log('res permanentlyDelete', res);
+
+      setUserInfo({})
+      AsyncStorage.removeItem('userInfo')
+      AsyncStorage.removeItem('token')
+      AsyncStorage.removeItem('userInfoChat')
+
+      navigation.navigate('LoginScreen');
+    })
+    .catch((err) => {
+      console.log('error login', err);
+      alert("Logout Faled, Try Again");
+      setIsLoading(false);
+    });
+
+  
+};
+
   useEffect(() => {
     isLoggedIn();
   }, [])
@@ -249,7 +282,8 @@ export const AuthProvider = ({ children }) => {
       splashLoading,
       logins,
       registers,
-      logouts
+      logouts,
+      permanentlyDelete
      }}>
       {children}
     </AuthContext.Provider>
