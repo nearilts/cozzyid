@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, SafeAreaView, ScrollView, Image } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, SafeAreaView, ScrollView, Image ,Linking} from 'react-native'
 import React, { createContext,useContext, useState } from 'react'
 import COLORS from '../../const/color'
 import { AuthContext } from '../../context/AuthContext'
@@ -6,6 +6,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import ContactInfo from '../../component/ContactInfo'
 import { KeyboardAvoidingView, Platform } from 'react-native';
+import CheckBox from 'expo-checkbox';
 
 const RegisterScreen = ({navigation}) => {
 
@@ -17,7 +18,12 @@ const RegisterScreen = ({navigation}) => {
     const [referral, setreferral] = useState(null)
 
     const {isLoading,registers} = useContext(AuthContext);
+    const [checked, setChecked] = useState(false);
+    const [checkeds, setCheckeds] = useState(false);
 
+const handleOpenURL = (url) => {
+    Linking.openURL(url).catch(err => console.error("Couldn't load page", err));
+};
   return (
     <KeyboardAvoidingView 
           behavior={Platform.OS === "ios" ? "padding" : "height"} 
@@ -102,7 +108,40 @@ const RegisterScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
 
+               <View style={{flexDirection:'row',paddingLeft: 20, paddingTop: 10,paddingBottom:10}}>
+                            
+                  <CheckBox
+                    tintColors={{ true: COLORS.primary, false: 'black' }}
+                      title='Check me!'
+                        disabled={false}
+                        value={checked}
+                        onValueChange={() => setChecked(!checked)}
+                    />
+                    <TouchableOpacity  onPress={() =>  handleOpenURL('https://www.cozzy.id/page/kebijakan-informasi-pribadi')}>
+                    <Text style={{paddingLeft: 10,  paddingTop:5, fontSize: 15, color: COLORS.primary, fontWeight: 'bold' }}> Kebijakan Privacy</Text>
+    
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={{flexDirection:'row',paddingLeft: 20, paddingTop: 10,paddingBottom:30}}>
+                            
+                    <CheckBox
+                      tintColors={{ true: COLORS.primary, false: 'black' }}
+                        title='Check me!'
+                          disabled={false}
+                          value={checkeds}
+                          onValueChange={() => setCheckeds(!checkeds)}
+                      />
+                      <TouchableOpacity  onPress={() =>  handleOpenURL('https://www.cozzy.id/page/ketentuan-layanan')}>
+                      <Text style={{paddingLeft: 10, paddingTop:5, fontSize: 15, color: COLORS.primary, fontWeight: 'bold' }}> Ketentuan Layanan</Text>
+      
+                      </TouchableOpacity>
+                    </View>
                 <TouchableOpacity style={{backgroundColor: COLORS.primary, padding: 10, alignItems:'center', borderRadius: 10}} onPress={() => {
+                    if (!checked || !checkeds) {
+                      alert("Harap setujui Kebijakan Privasi dan Ketentuan Layanan.");
+                      return;
+                    }
                     registers(email, password,first,last,phone,referral,navigation)
                 }}>
                     <Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>REGISTER</Text>

@@ -424,7 +424,7 @@ const handleOpenURL = (url) => {
                     onValueChange={() => setChecked(!checked)}
                 />
                 <TouchableOpacity  onPress={() =>  handleOpenURL(URLS+'get-tac-pdf')}>
-                <Text style={{ paddingTop:5, fontSize: 15, color: COLORS.primary, fontWeight: 'bold' }}> Term And Condition</Text>
+                <Text style={{ paddingTop:5, fontSize: 15, color: COLORS.primary, fontWeight: 'bold' }}> Saya Sudah Membaca Dan Menyetujui</Text>
 
                 </TouchableOpacity>
               </View>
